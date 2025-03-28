@@ -1,4 +1,5 @@
 # 🐍 Python Playground Starter
+![WIP](https://img.shields.io/badge/🚧-work%20in%20progress-orange)
 
 This is a modular, developer-friendly Python boilerplate for building Flask web apps with a modern frontend powered by Tailwind CSS v4 and Vite. Ideal for experimenting, learning, or starting new Flask-based projects.
 
@@ -19,12 +20,13 @@ This is a modular, developer-friendly Python boilerplate for building Flask web 
 
 ## 🧪 Tech Stack
 
-![Flask](https://img.shields.io/badge/flask-2.x-lightgrey?logo=flask)
-![Vite](https://img.shields.io/badge/vite-5.x-646CFF?logo=vite&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/tailwindcss-4.x-38B2AC?logo=tailwindcss&logoColor=white)
-![Jinja](https://img.shields.io/badge/jinja-3.x-B41717?logo=jinja&logoColor=white)
-![HTML](https://img.shields.io/badge/html-5-orange?logo=html5)
-![CSS](https://img.shields.io/badge/css-3-264de4?logo=css3&logoColor=white)
+[![Flask](https://img.shields.io/badge/flask-2.x-lightgrey?logo=flask)](https://flask.palletsprojects.com/)
+[![Vite](https://img.shields.io/badge/vite-5.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TailwindCSS](https://img.shields.io/badge/tailwindcss-4.x-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Dark Mode](https://img.shields.io/badge/dark--mode-supported-000000?logo=halfmoon&logoColor=white)](https://tailwindcss.com/docs/dark-mode)
+[![Jinja](https://img.shields.io/badge/jinja-3.x-B41717?logo=jinja&logoColor=white)](https://jinja.palletsprojects.com/)
+[![HTML](https://img.shields.io/badge/html-5-orange?logo=html5)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS](https://img.shields.io/badge/css-3-264de4?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
 ---
 
@@ -110,3 +112,9 @@ python src/examples/parse_log.py
 ## 📎 License
 
 MIT – Use freely for personal, learning, or commercial projects.
+
+---
+
+<p align="center">
+  Made with ❤️ using Flask, TailwindCSS+Vite, and Python
+</p>
