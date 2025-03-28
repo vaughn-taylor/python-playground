@@ -2,16 +2,18 @@
 
 This is a modular, developer-friendly Python boilerplate for building Flask web apps with a modern frontend powered by Tailwind CSS v4 and Vite. Ideal for experimenting, learning, or starting new Flask-based projects.
 
-<p align="center">
-  <a href="https://github.com/vaughn-taylor/python-playground/releases">
-    <img src="https://img.shields.io/github/v/release/vaughn-taylor/python-playground?label=version" alt="Release">
-  </a>
-  <a href="https://github.com/vaughn-taylor/python-playground/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/vaughn-taylor/python-playground" alt="License: MIT">
-  </a>
-  <img src="https://img.shields.io/badge/made%20with-python%203.10%2B-blue" alt="Python 3.10+">
-  <img src="https://img.shields.io/github/last-commit/vaughn-taylor/python-playground" alt="Last Commit">
-</p>
+---
+
+## 📊 Project Info
+
+![Version](https://img.shields.io/github/v/release/vaughn-taylor/python-playground?label=release)
+![License](https://img.shields.io/github/license/vaughn-taylor/python-playground?color=blue)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Last Commit](https://img.shields.io/github/last-commit/vaughn-taylor/python-playground)
+![Issues](https://img.shields.io/github/issues/vaughn-taylor/python-playground)
+![Pull Requests](https://img.shields.io/github/issues-pr/vaughn-taylor/python-playground)
+![Stars](https://img.shields.io/github/stars/vaughn-taylor/python-playground?style=social)
+![Forks](https://img.shields.io/github/forks/vaughn-taylor/python-playground?style=social)
 
 ---
 
