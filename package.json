@@ -1,0 +1,17 @@
+{
+  "name": "flask-vite-tailwind",
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail -n VITE,FLASK -c yellow,blue \"vite build --watch\" \"sleep 0.5 && python src/app.py\"",
+    "watch": "vite build --watch",
+    "flask": "flask run",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.0.17",
+    "tailwindcss": "^4.0.17"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

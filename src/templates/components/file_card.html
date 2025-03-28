@@ -1,0 +1,37 @@
+<div
+    class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm hover:shadow-md transition">
+
+    <div class="flex justify-between items-center mb-2">
+        <span class="font-mono text-sm text-gray-800 dark:text-gray-100 break-words">
+            {{ file.name }}
+        </span>
+
+        {% if file.type == 'ERROR' %}
+        <span
+            class="text-xs bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200 px-2 py-0.5 rounded-full font-semibold">
+            ERROR
+        </span>
+        {% elif file.type == 'SUMMARY' %}
+        <span
+            class="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded-full font-semibold">
+            SUMMARY
+        </span>
+        {% else %}
+        <span
+            class="text-xs bg-gray-300 text-gray-700 dark:bg-gray-600 dark:text-gray-100 px-2 py-0.5 rounded-full font-semibold">
+            LOG
+        </span>
+        {% endif %}
+    </div>
+
+    <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
+        Last modified: {{ file.modified.strftime("%Y-%m-%d %H:%M") }}<br>
+        Size: {{ file.size_kb }} KB
+    </p>
+
+    <a href="{{ url_for('view_file', filename=file.name) }}"
+        class="text-sm text-blue-600 dark:text-blue-400 hover:underline block">🔍 View</a>
+
+    <a href="{{ url_for('download_file', filename=file.name) }}"
+        class="text-sm text-gray-500 dark:text-gray-300 hover:underline block">⬇ Download</a>
+</div>

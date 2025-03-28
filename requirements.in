@@ -1,0 +1,13 @@
+# requirements.in
+
+# Run: 'pip-compile requirements.in' to generate a requirements.txt file
+# the sub-dependencies (e.g. python-dotenv) are handled by pip-tools
+# To install what is in requirements.txt: 'pip-sync requirements.txt'
+# To upgrade a package: 'pip-compile --upgrade'
+# To create a dev-requirements.txt (perfect for teams) ask GPT how this works
+# To install a new package like flask, just add it to the list below then 'pip-compile requirements.in' then 'pip-sync requirements.txt'
+
+python-dotenv
+requests
+pytest
+flask

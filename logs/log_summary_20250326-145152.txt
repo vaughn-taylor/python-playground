@@ -1,0 +1,8 @@
+📊 Log Level Summary Report
+===========================
+Generated on: 20250326-145152
+
+DEBUG: 2
+ERROR: 1
+INFO: 5
+WARNING: 1

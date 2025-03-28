@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Log Dashboard{% endblock %}</title>
+
+    <!-- 🌒 Dark mode init script (before Tailwind loads) -->
+    <script>
+        if (
+            localStorage.getItem('theme') === 'dark' ||
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+
+    <link rel="stylesheet" href="{{ get_asset_path('main.css') }}">
+    <script type="module" src="{{ get_asset_path('main.js') }}"></script>
+
+    {% block head %}{% endblock %}
+</head>
+
+<body
+    class="min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans px-4 py-6 sm:px-6 lg:px-8">
+
+    {% include 'components/navbar.html' %}
+
+    <main class="max-w-5xl mx-auto">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'components/footer.html' %}
+
+    <!-- 🌗 Toggle dark mode -->
+    <script>
+        const toggleBtn = document.getElementById("toggleDarkMode");
+        toggleBtn?.addEventListener("click", () => {
+            const root = document.documentElement;
+            const isDark = root.classList.toggle("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+        });
+    </script>
+
+</body>
+
+</html>
