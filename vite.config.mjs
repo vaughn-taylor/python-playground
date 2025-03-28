@@ -4,6 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   root: './src/frontend',
+  base: '/static/',
   build: {
     outDir: '../../static',
     emptyOutDir: true,

@@ -29,9 +29,9 @@
         Size: {{ file.size_kb }} KB
     </p>
 
-    <a href="{{ url_for('view_file', filename=file.name) }}"
+    <a href="{{ url_for('logs.view_file', filename=file.name) }}"
         class="text-sm text-blue-600 dark:text-blue-400 hover:underline block">🔍 View</a>
 
-    <a href="{{ url_for('download_file', filename=file.name) }}"
+    <a href="{{ url_for('logs.download_file', filename=file.name) }}"
         class="text-sm text-gray-500 dark:text-gray-300 hover:underline block">⬇ Download</a>
 </div>

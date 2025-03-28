@@ -1,7 +1,7 @@
 export default {
     content: [
-        "./src/templates/**/*.html",
-        "./src/frontend/**/*.js"
+        "./src/backend/templates/**/*.html",
+        "./src/frontend/**/*.{js,ts}"
     ],
     darkMode: "class"
 }
