@@ -2,6 +2,17 @@
 
 This is a modular, developer-friendly Python boilerplate for building Flask web apps with a modern frontend powered by Tailwind CSS v4 and Vite. Ideal for experimenting, learning, or starting new Flask-based projects.
 
+<p align="center">
+  <a href="https://github.com/vaughn-taylor/python-playground/releases">
+    <img src="https://img.shields.io/github/v/release/vaughn-taylor/python-playground?label=version" alt="Release">
+  </a>
+  <a href="https://github.com/vaughn-taylor/python-playground/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/vaughn-taylor/python-playground" alt="License: MIT">
+  </a>
+  <img src="https://img.shields.io/badge/made%20with-python%203.10%2B-blue" alt="Python 3.10+">
+  <img src="https://img.shields.io/github/last-commit/vaughn-taylor/python-playground" alt="Last Commit">
+</p>
+
 ---
 
 ## 🚀 Features
