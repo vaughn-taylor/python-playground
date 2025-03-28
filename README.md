@@ -17,6 +17,17 @@ This is a modular, developer-friendly Python boilerplate for building Flask web 
 
 ---
 
+## 🧪 Tech Stack
+
+![Flask](https://img.shields.io/badge/flask-2.x-lightgrey?logo=flask)
+![Vite](https://img.shields.io/badge/vite-5.x-646CFF?logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-4.x-38B2AC?logo=tailwindcss&logoColor=white)
+![Jinja](https://img.shields.io/badge/jinja-3.x-B41717?logo=jinja&logoColor=white)
+![HTML](https://img.shields.io/badge/html-5-orange?logo=html5)
+![CSS](https://img.shields.io/badge/css-3-264de4?logo=css3&logoColor=white)
+
+---
+
 ## 🚀 Features
 
 - ✅ **Flask** with auto-reloading templates
