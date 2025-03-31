@@ -16,6 +16,7 @@ venv/
 
 # macOS
 .DS_Store
+_BAK/
 
 # Logs
 logs/*.log

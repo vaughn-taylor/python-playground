@@ -2,34 +2,26 @@
 
 {% block content %}
 
-<!-- Filter Form -->
-<div class="flex justify-between items-center mb-4">
-    <form method="get">
-        <label for="type" class="sr-only">Filter</label>
-        <select name="type" id="type"
-            class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 px-2 py-1 rounded"
-            onchange="this.form.submit()">
-            <option value="" {% if not log_type %}selected{% endif %}>Show All</option>
-            <option value="errors" {% if log_type=='errors' %}selected{% endif %}>🚨 Errors Only</option>
-            <option value="summaries" {% if log_type=='summaries' %}selected{% endif %}>📊 Summaries Only</option>
-        </select>
-    </form>
+<!-- Dashboard Overview Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+  <a href="{{ url_for('logs.index') }}" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+    <h2 class="text-xl font-semibold mb-2">📁 Logs</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-300">View archived logs and system summaries.</p>
+  </a>
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow">
+    <h2 class="text-xl font-semibold mb-2">📈 Sales Overview</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-300">Daily sales totals for the past week.</p>
+  </div>
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow">
+    <h2 class="text-xl font-semibold mb-2">⚙️ Settings</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-300">Manage system configuration (coming soon).</p>
+  </div>
 </div>
 
-<!-- File Count -->
-<p class="text-sm text-gray-700 dark:text-gray-300 mb-6">
-    Showing <strong>{{ files|length }}</strong> file(s)
-    {% if log_type %} (filtered by <code>{{ log_type }}</code>){% endif %}
-</p>
-
-<!-- File Cards -->
-<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {% if files %}
-    {% for file in files %}
-    {% include 'components/file_card.html' %}
-    {% endfor %}
-    {% else %}
-    {% include 'components/empty_state.html' %}
-    {% endif %}
+<!-- Chart Section -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow mb-10">
+  <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">📊 Sales Chart</h2>
+  <canvas id="salesChart" height="120"></canvas>
 </div>
+
 {% endblock %}
