@@ -136,17 +136,6 @@ def inject_asset_path():
 
 ---
 
-## 🤓 For Dev Mode
-
-To use Vite’s hot module reload in dev:
-
-```bash
-npm run dev
-```
-
-And in your `base.html`, you can load from `localhost:5173` directly for live reloading if needed.
-
----
 
 ## 📌 TODO / Ideas
 
