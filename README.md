@@ -1,7 +1,8 @@
 # 🐍 Python Playground Starter
+
 ![WIP](https://img.shields.io/badge/🚧-work%20in%20progress-orange)
 
-This is a modular, developer-friendly Python boilerplate for building Flask web apps with a modern frontend powered by Tailwind CSS v4 and Vite. Ideal for experimenting, learning, or starting new Flask-based projects.
+This is a modular, developer-friendly Python boilerplate for building **Flask** web apps with a modern frontend powered by **Tailwind CSS v4** and **Vite**. Ideal for experimenting, learning, or kicking off new Flask-based projects with modern styling and dev tools.
 
 ---
 
@@ -13,108 +14,147 @@ This is a modular, developer-friendly Python boilerplate for building Flask web 
 ![Last Commit](https://img.shields.io/github/last-commit/vaughn-taylor/python-playground)
 ![Issues](https://img.shields.io/github/issues/vaughn-taylor/python-playground)
 ![Pull Requests](https://img.shields.io/github/issues-pr/vaughn-taylor/python-playground)
-![Stars](https://img.shields.io/github/stars/vaughn-taylor/python-playground?style=social)
-![Forks](https://img.shields.io/github/forks/vaughn-taylor/python-playground?style=social)
 
 ---
 
-## 🧪 Tech Stack
+## 🧰 Tech Stack
 
-[![Flask](https://img.shields.io/badge/flask-2.x-lightgrey?logo=flask)](https://flask.palletsprojects.com/)
-[![Vite](https://img.shields.io/badge/vite-5.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/tailwindcss-4.x-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Dark Mode](https://img.shields.io/badge/dark--mode-supported-000000?logo=halfmoon&logoColor=white)](https://tailwindcss.com/docs/dark-mode)
-[![Jinja](https://img.shields.io/badge/jinja-3.x-B41717?logo=jinja&logoColor=white)](https://jinja.palletsprojects.com/)
-[![HTML](https://img.shields.io/badge/html-5-orange?logo=html5)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS](https://img.shields.io/badge/css-3-264de4?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-
----
-
-## 🚀 Features
-
-- ✅ **Flask** with auto-reloading templates
-- 🎨 **Tailwind CSS v4** via Vite (with build pipeline)
-- 🔍 Log viewer and archiving tool
-- 🧩 Modular project structure
-- 🧪 Sample utilities and route blueprints
-- 🌈 Dark mode support
-- 📦 Preconfigured `.gitignore`
+- **Backend**: Flask (modular, with `bootstrap/` init layer)
+- **Frontend**: Tailwind CSS v4 + Vite
+- **JS Tools**: Node/NPM
+- **Build Output**: Served via Flask from `/static/assets/`
 
 ---
 
 ## 📁 Project Structure
 
 ```
-src/
-├── app.py             # Main Flask entry point
-├── routes/            # Flask Blueprints (e.g. logs.py)
-├── utils/             # Python utilities (e.g. time formatter)
-├── examples/          # Scripts and experiments
-├── templates/         # Jinja templates
-├── frontend/          # Tailwind CSS + Vite frontend
-static/                # Compiled assets from Vite
-logs/                  # Runtime logs + archive
+python-playground/
+├── bootstrap/                # App config, logging, env loading
+├── src/
+│   └── frontend/             # Vite entry point, Tailwind CSS, JS
+│       ├── main.js
+│       └── style.css
+├── templates/                # Flask Jinja templates
+├── static/                   # Vite builds output here
+│   └── assets/
+│       ├── main.js
+│       └── main.css
+├── vite.config.mjs           # Vite config for building frontend
+├── run.py                    # Flask entry point
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## 🧰 Requirements
+## 🚀 Quickstart
 
-- Python 3.10+
-- Node.js (for Tailwind+Vite)
-- `pip install -r requirements.txt`
-- `npm install` (inside `src/frontend`)
+### 1. Clone and install Python dependencies
+
+```bash
+git clone https://github.com/your-username/python-playground.git
+cd python-playground
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Install and build frontend
+
+```bash
+npm install
+npm run build  # or `npm run dev` during development
+```
+
+### 3. Run Flask
+
+```bash
+flask run
+```
+
+Then visit [http://localhost:5000](http://localhost:5000)
 
 ---
 
-## 🛠 Usage
+## 🎨 Tailwind CSS v4 Configuration
 
-### 🔧 1. Build frontend
-```bash
-npm run build
+Tailwind v4 no longer uses `tailwind.config.js`. Instead, configuration is embedded in CSS:
+
+```css
+/* src/frontend/style.css */
+@import "tailwindcss";
+
+@source "../../templates/**/*.html";
+@custom-variant dark (&:where(.dark, .dark *));
 ```
 
-### 🧪 2. Run app
-```bash
-python src/app.py
+This keeps config CSS-first and scoped to the templates Flask renders.
+
+---
+
+## ⚙️ Vite Setup Highlights
+
+```js
+// vite.config.mjs
+export default defineConfig({
+  root: './src/frontend',
+  build: {
+    outDir: '../../static/assets',
+    emptyOutDir: true,
+    manifest: true,
+    manifestDir: '../.vite',
+    rollupOptions: {
+      input: './src/frontend/main.js'
+    }
+  }
+});
 ```
 
-Then visit [http://localhost:5050](http://localhost:5050)
+- Outputs `main.js` and `main.css` to `/static/assets/`
+- Generates a manifest in `.vite/manifest.json` for Flask to use
 
-## 🛠 ALTERNATELY: Vite Watch + Run app
+---
+
+## 🧠 Flask + Vite Integration
+
+Flask uses a helper called `get_asset_path()` to read the Vite manifest and inject the correct hashed asset paths into templates:
+
+```html
+<!-- base.html -->
+<link rel="stylesheet" href="{{ get_asset_path('main.css') }}">
+<script type="module" src="{{ get_asset_path('main.js') }}"></script>
+```
+
+The helper is registered globally via:
+
+```python
+@app.context_processor
+def inject_asset_path():
+    return {'get_asset_path': get_asset_path}
+```
+
+---
+
+## 🤓 For Dev Mode
+
+To use Vite’s hot module reload in dev:
 
 ```bash
 npm run dev
 ```
 
-Then visit [http://localhost:5050](http://localhost:5050)
-
-
----
-
-## 🧪 Example Scripts
-
-```bash
-python src/examples/parse_log.py
-```
+And in your `base.html`, you can load from `localhost:5173` directly for live reloading if needed.
 
 ---
 
-## 📚 Tips
+## 📌 TODO / Ideas
 
-- Tailwind config is in `vite.config.mjs` and `style.css`
-- Logs archive automatically from `app_events.log`
-- You can add Blueprints under `src/routes` and register them in `app.py`
-- Live reload is difficult to achieve — `⌘R` is always faithful ❤️
-
----
-
-## 📎 License
-
-MIT – Use freely for personal, learning, or commercial projects.
+- Add basic auth + database integration
+- Extend with Blueprints for multi-page routing
+- Set up Docker for deployment
+- Add tests + CI support
 
 ---
 
-<p align="center">
-  Made with ❤️ using Flask, TailwindCSS+Vite, and Python
-</p>
+**Logged with ❤️ by Pythoneer + Vaughn**
