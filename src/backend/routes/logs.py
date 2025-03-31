@@ -1,8 +1,12 @@
 # src/backend/routes/logs.py
 from flask import Blueprint, render_template, request
 from src.backend.utils.assets import get_asset_path
+from src.backend.utils.log_utils import get_log_files, load_file_content
+import os
+
 
 logs_bp = Blueprint("logs", __name__)
+ARCHIVE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'logs', 'archive'))
 
 @logs_bp.route("/")
 def index():
