@@ -1,11 +1,83 @@
-<header class="bg-white dark:bg-gray-800 shadow mb-6 p-4 rounded">
-    <nav class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            {{ page_icon | default("📊") }} {{ page_title | default("Data Dashboard") }}
-        </h1>
-        <button id="toggleDarkMode"
-            class="text-sm px-3 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
-            🌓 Toggle Dark Mode
+<header>
+    <nav class="flex items-center justify-between relative z-50">
+
+        <!-- Logo + Title -->
+        <div class="flex items-center space-x-4">
+            <a href="/">
+                <svg class="w-10 h-10 dark:fill-white hover:fill-orange-600 fill-black"
+                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                    <path
+                        d="M320 0c13.3 0 24 10.7 24 24l0 72 104 0c53 0 96 43 96 96l0 224c0 53-43 96-96 96l-256 0c-53 0-96-43-96-96l0-224c0-53 43-96 96-96l104 0 0-72c0-13.3 10.7-24 24-24zM192 144c-26.5 0-48 21.5-48 48l0 224c0 26.5 21.5 48 48 48l256 0c26.5 0 48-21.5 48-48l0-224c0-26.5-21.5-48-48-48l-128 0-128 0zM48 224l16 0 0 192-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0 0-192 16 0zM208 384l32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm96 0l32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm96 0l32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zM200 256a40 40 0 1 1 80 0 40 40 0 1 1 -80 0zm200-40a40 40 0 1 1 0 80 40 40 0 1 1 0-80z" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Hamburger toggle -->
+        <button id="navToggle"
+            class="md:hidden text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none text-xl transition-transform duration-200 z-50"
+            aria-label="Toggle navigation">
+            <span id="navIcon" class="inline-block transition-transform">☰</span>
         </button>
+
+        <!-- Desktop Nav + Toggle -->
+        <div class="hidden md:flex items-center space-x-6">
+            <ul class="flex space-x-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <li>
+                    <a href="{{ url_for('dashboard.index') }}"
+                        class="nav-link {% if request.path == '/' %}text-blue-600 dark:text-blue-400 underline{% endif %}">Dashboard</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('logs.index') }}"
+                        class="nav-link {% if '/logs' in request.path %}text-blue-600 dark:text-blue-400 underline{% endif %}">Logs</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dashboard.admin_panel') }}"
+                        class="nav-link {% if '/admin' in request.path %}text-blue-600 dark:text-blue-400 underline{% endif %}">Admin</a>
+                </li>
+            </ul>
+
+            <!-- Dark Mode Toggle -->
+            <button id="toggleDarkMode"
+                class="w-10 h-10 flex items-center justify-center rounded-md border border-gray-400 bg-gray-300 dark:bg-gray-700">
+                <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                        d="M464 256c0-114.9-93.1-208-208-208l0 416c114.9 0 208-93.1 208-208zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z" />
+                </svg>
+            </button>
+        </div>
     </nav>
+
+    <!-- Mobile drawer nav -->
+    <div id="navDrawer"
+        class="fixed inset-0 z-40 bg-white dark:bg-gray-900 flex flex-col items-center justify-start space-y-6 text-lg font-medium text-gray-800 dark:text-gray-100 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden pt-24">
+        <a href="{{ url_for('dashboard.index') }}" class="nav-link">Dashboard</a>
+        <a href="{{ url_for('logs.index') }}" class="nav-link">Logs</a>
+        <a href="{{ url_for('dashboard.admin_panel') }}" class="nav-link">Admin</a>
+    </div>
+
+    <!-- Drawer Nav Script -->
+    <script>
+        const navToggle = document.getElementById('navToggle');
+        const navDrawer = document.getElementById('navDrawer');
+        const navIcon = document.getElementById('navIcon');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navToggle?.addEventListener('click', () => {
+            navDrawer.classList.toggle('translate-x-full');
+            navIcon.textContent = navDrawer.classList.contains('translate-x-full') ? '☰' : '✖';
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 768 && !navDrawer.classList.contains('translate-x-full')) {
+                    navDrawer.classList.add('translate-x-full');
+                    navIcon.textContent = '☰';
+                }
+            });
+        });
+    </script>
 </header>
+
+<h1 class="mt-8 mb-8 pb-3 text-3xl font-bold text-gray-900 dark:text-white border-b border-gray-600">
+    {{ page_title | default("Data Dashboard") }}
+</h1>

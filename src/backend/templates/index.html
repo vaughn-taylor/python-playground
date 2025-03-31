@@ -22,6 +22,11 @@
 <!-- Chart Section -->
 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow mb-10">
   <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">📊 Sales Chart</h2>
+  <!-- Mock Data Toggle -->
+  <div class="flex items-center gap-2 mb-4">
+    <input type="checkbox" id="mockToggle" class="w-4 h-4 rounded border-gray-300 text-blue-600">
+    <label for="mockToggle" class="text-sm text-gray-700 dark:text-gray-300">Use mock data</label>
+  </div>
   <!-- Date Filter -->
   <form id="sales-filter" class="flex flex-wrap gap-2 items-center mb-6">
     <label class="text-sm text-gray-700 dark:text-gray-300">From:</label>
@@ -34,7 +39,30 @@
 
     <button type="submit" class="px-3 py-1 rounded bg-blue-600 text-white text-sm hover:bg-blue-700">Filter</button>
   </form>
-  <canvas id="salesChart" height="120"></canvas>
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10">
+    <!-- Chart -->
+    <div class="lg:col-span-3 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">📊 Sales Chart</h2>
+      <canvas id="salesChart" height="120"></canvas>
+      <p id="last-updated" class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-right">
+        Last updated: never
+      </p>
+    </div>
+
+    <!-- Summary -->
+    <div class="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">📋 Summary</h2>
+      <div id="summary-stats" class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+        <p><strong>Total Sales:</strong> <span id="stat-total-sales">–</span></p>
+        <p><strong>Total Refunds:</strong> <span id="stat-total-refunds">–</span></p>
+        <p><strong>Avg. Sales/Day:</strong> <span id="stat-avg-sales">–</span></p>
+        <p><strong>Range:</strong> <span id="stat-range">–</span></p>
+      </div>
+    </div>
+  </div>
+  <p id="last-updated" class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-right">
+    Last updated: never
+  </p>
 </div>
 
 {% endblock %}
