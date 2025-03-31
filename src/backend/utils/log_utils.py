@@ -3,7 +3,7 @@
 import os
 from datetime import datetime
 
-LOGS_DIR = os.path.abspath(os.path.join(__file__, "..", "..", "..", "logs"))
+LOGS_DIR = os.path.abspath(os.path.join(__file__, "..", "..", "..", "..", "logs"))
 
 def get_log_files(log_type=None):
     try:
@@ -21,7 +21,7 @@ def get_log_files(log_type=None):
                     "summaries": "log_summary",
                 }
                 keyword = match_keywords.get(log_type.lower())
-                if keyword and keyword not in filename.lower():
+                if keyword is not None and keyword not in filename.lower():
                     continue
 
             file_stat = os.stat(filepath)

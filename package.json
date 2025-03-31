@@ -2,7 +2,7 @@
   "name": "flask-vite-tailwind",
   "version": "2.0.0",
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail -n VITE,FLASK -c yellow,blue \"vite build --watch\" \"sleep 0.5 && python src/app.py\"",
+    "dev": "concurrently --kill-others-on-fail -n VITE,FLASK -c yellow,blue \"vite build --watch\" \"sleep 0.5 && python run.py\"",
     "watch": "vite build --watch",
     "flask": "flask run",
     "build": "vite build"

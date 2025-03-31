@@ -2,16 +2,6 @@
 
 {% block content %}
 
-<div class="p-4 bg-yellow-100 text-yellow-900 rounded mb-4 text-sm">
-    <p>🪵 Debug: Files passed to template = {{ files|length }}</p>
-    <ul>
-        {% for f in files %}
-        <li>{{ f.name }} — {{ f.type }} — {{ f.size_kb }} KB</li>
-        {% endfor %}
-    </ul>
-</div>
-
-
 <!-- Filter Form -->
 <div class="flex justify-between items-center mb-4">
     <form method="get">
@@ -42,5 +32,8 @@
     {% include 'components/empty_state.html' %}
     {% endif %}
 </div>
+
+<a href="{{ url_for('logs.archive_index') }}"
+    class="inline-flex justify-center items-center bg-red-500 text-white px-4 py-2 mt-8">🗃️ View Archived Logs</a>
 
 {% endblock %}
