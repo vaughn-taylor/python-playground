@@ -29,3 +29,4 @@ logs/archive/
 .pytest_cache/
 coverage/
 htmlcov/
+.shopify
