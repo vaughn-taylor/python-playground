@@ -1,28 +1,16 @@
-# 🐍 Python Playground Starter
 
-![WIP](https://img.shields.io/badge/🚧-work%20in%20progress-orange)
+# 🐍 Python Playground
 
-This is a modular, developer-friendly Python boilerplate for building **Flask** web apps with a modern frontend powered by **Tailwind CSS v4** and **Vite**. Ideal for experimenting, learning, or kicking off new Flask-based projects with modern styling and dev tools.
-
----
-
-## 📊 Project Info
-
-![Version](https://img.shields.io/github/v/release/vaughn-taylor/python-playground?label=release)
-![License](https://img.shields.io/github/license/vaughn-taylor/python-playground?color=blue)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![Last Commit](https://img.shields.io/github/last-commit/vaughn-taylor/python-playground)
-![Issues](https://img.shields.io/github/issues/vaughn-taylor/python-playground)
-![Pull Requests](https://img.shields.io/github/issues-pr/vaughn-taylor/python-playground)
+This is a modern Python + JavaScript boilerplate that integrates **Flask**, **Tailwind CSS v4**, **Vite**, and **SQLite**, designed to serve as a flexible, full-stack playground for tinkering, prototyping, and building creative web apps.
 
 ---
 
-## 🧰 Tech Stack
+## 🚀 Tech Stack
 
-- **Backend**: Flask (modular, with `bootstrap/` init layer)
-- **Frontend**: Tailwind CSS v4 + Vite
-- **JS Tools**: Node/NPM
-- **Build Output**: Served via Flask from `/static/assets/`
+- **Backend:** Python 3 + Flask
+- **Frontend:** Vite + Tailwind CSS v4
+- **Database:** SQLite (`data/app.db`)
+- **Build Tools:** Node.js, npm
 
 ---
 
@@ -30,104 +18,81 @@ This is a modular, developer-friendly Python boilerplate for building **Flask** 
 
 ```
 python-playground/
-├── bootstrap/                # App config, logging, env loading
+├── bootstrap/              # Environment setup scripts
+├── data/                   # SQLite DB lives here
+│   └── app.db              # Main database file
+├── logs/                   # Log output directory
 ├── src/
-│   └── frontend/             # Vite entry point, Tailwind CSS, JS
-│       ├── main.js
-│       └── style.css
-├── templates/                # Flask Jinja templates
-├── static/                   # Vite builds output here
-│   └── assets/
-│       ├── main.js
-│       └── main.css
-├── vite.config.mjs           # Vite config for building frontend
-├── run.py                    # Flask entry point
-├── requirements.txt
-└── README.md
+│   ├── backend/            # Flask backend code
+│   ├── frontend/           # JS + CSS source files (Vite entry point)
+│   │   ├── main.js
+│   │   └── style.css       # Tailwind @source config here
+├── static/                 # Built assets from Vite
+│   └── .vite/manifest.json # Used by Flask to resolve assets
+├── templates/              # Jinja2 HTML templates
+├── tests/                  # Python unit tests
+├── .flaskenv               # Flask environment config
+├── package.json            # JS dependencies
+├── requirements.txt        # Python dependencies
+├── run.py                  # Main entrypoint to run Flask app
+└── README.md               # This file
 ```
 
 ---
 
-## 🚀 Quickstart
+## 🧵 Tailwind v4 + Vite Integration
 
-### 1. Clone and install Python dependencies
-
-```bash
-git clone https://github.com/your-username/python-playground.git
-cd python-playground
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### 2. Install and build frontend
-
-```bash
-npm install
-npm run build  # or `npm run dev` during development
-```
-
-### 3. Run Flask
-
-```bash
-flask run
-```
-
-Then visit [http://localhost:5000](http://localhost:5000)
-
----
-
-## 🎨 Tailwind CSS v4 Configuration
-
-Tailwind v4 no longer uses `tailwind.config.js`. Instead, configuration is embedded in CSS:
+### 🧠 Tailwind Setup (v4)
+Tailwind v4 now uses a CSS-driven config approach. In `src/frontend/style.css`:
 
 ```css
-/* src/frontend/style.css */
 @import "tailwindcss";
 
-@source "../../templates/**/*.html";
+@source "../templates/**/*.html";
 @custom-variant dark (&:where(.dark, .dark *));
 ```
 
-This keeps config CSS-first and scoped to the templates Flask renders.
+No more `tailwind.config.js` needed!
 
----
-
-## ⚙️ Vite Setup Highlights
-
+### ⚙️ Vite Configuration
 ```js
 // vite.config.mjs
+import { defineConfig } from 'vite'
+import path from 'path'
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineConfig({
   root: './src/frontend',
   build: {
-    outDir: '../../static/assets',
+    outDir: '../../static',
     emptyOutDir: true,
     manifest: true,
-    manifestDir: '../.vite',
+    manifestDir: '.',
     rollupOptions: {
-      input: './src/frontend/main.js'
-    }
-  }
-});
+      input: './src/frontend/main.js',
+    },
+  },
+  plugins: [tailwindcss()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/frontend'),
+    },
+  },
+})
 ```
-
-- Outputs `main.js` and `main.css` to `/static/assets/`
-- Generates a manifest in `.vite/manifest.json` for Flask to use
 
 ---
 
-## 🧠 Flask + Vite Integration
+## 🌐 Flask + Vite Asset Loader
 
-Flask uses a helper called `get_asset_path()` to read the Vite manifest and inject the correct hashed asset paths into templates:
+A custom helper in Flask (`get_asset_path`) reads the Vite manifest to inject the correct hashed file paths into your HTML:
 
 ```html
-<!-- base.html -->
 <link rel="stylesheet" href="{{ get_asset_path('main.css') }}">
 <script type="module" src="{{ get_asset_path('main.js') }}"></script>
 ```
 
-The helper is registered globally via:
-
+Registered globally via:
 ```python
 @app.context_processor
 def inject_asset_path():
@@ -136,14 +101,69 @@ def inject_asset_path():
 
 ---
 
+## 💾 Database
 
-## 📌 TODO / Ideas
-
-- Add basic auth + database integration
-- Extend with Blueprints for multi-page routing
-- Set up Docker for deployment
-- Add tests + CI support
+- Uses SQLite located at `data/app.db`
+- You can seed it with `seed_sales_db.py`
 
 ---
 
-**Logged with ❤️ by Pythoneer + Vaughn**
+## 🛠️ Setup Instructions
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/vaughn-taylor/python-playground.git
+cd python-playground
+```
+
+### 2. Install Python dependencies
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 3. Install JS dependencies
+```bash
+npm install
+```
+
+### 4. Build assets (once)
+```bash
+npm run build
+```
+
+Or use the dev server for live reloading:
+```bash
+npm run dev
+```
+
+### 5. Run the Flask app
+```bash
+flask run
+# or
+python run.py
+```
+
+---
+
+## 🧪 Testing
+
+Run your Python tests:
+```bash
+pytest
+```
+
+---
+
+## 📸 Screenshots or Demos
+
+_coming soon_
+
+---
+
+## 🙌 Credits
+
+Built with ❤️ by [Vaughn Taylor](https://github.com/vaughn-taylor) and [Pythoneer 🐍].
+
+---
