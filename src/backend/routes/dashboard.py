@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, jsonify, request, redirect
 from src.backend.utils.assets import get_asset_path
 from src.backend.utils.db import get_db_cursor
 from src.backend.models.sale import Sale
+from src.backend.models.page import Page
 from datetime import datetime, timedelta
 import random
 
@@ -190,3 +191,68 @@ def delete_sale(sale_id):
         return redirect("/admin")
     except Exception as e:
         return f"Error: {e}", 500
+
+
+@dashboard_bp.route("/page/<slug>")
+def view_page(slug):
+    with get_db_cursor() as cursor:
+        cursor.execute("SELECT * FROM pages WHERE slug = ?", (slug,))
+        row = cursor.fetchone()
+        if not row:
+            return "Page not found", 404
+        page = Page.from_row(row)
+    return render_template("page.html", page=page, page_title=page.title, get_asset_path=get_asset_path)
+
+
+@dashboard_bp.route("/admin/pages")
+def admin_pages():
+    with get_db_cursor() as cursor:
+        cursor.execute("SELECT * FROM pages ORDER BY created_at DESC")
+        rows = cursor.fetchall()
+        pages = [Page.from_row(r) for r in rows]
+    return render_template("admin_pages.html", pages=pages, get_asset_path=get_asset_path, page_title="Pages", page_icon="📄")
+
+
+@dashboard_bp.route("/admin/pages/new", methods=["GET", "POST"])
+def admin_new_page():
+    if request.method == "POST":
+        slug = request.form.get("slug")
+        title = request.form.get("title")
+        content = request.form.get("content")
+        created_at = datetime.now().isoformat()
+
+        with get_db_cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO pages (slug, title, content, created_at)
+                VALUES (?, ?, ?, ?)
+            """, (slug, title, content, created_at))
+
+        return redirect("/admin/pages")
+
+    return render_template("admin_page_form.html", page=None, get_asset_path=get_asset_path, page_title="New Page", page_icon="➕")
+
+
+@dashboard_bp.route("/admin/pages/edit/<int:page_id>", methods=["GET", "POST"])
+def admin_edit_page(page_id):
+    with get_db_cursor() as cursor:
+        if request.method == "POST":
+            slug = request.form.get("slug")
+            title = request.form.get("title")
+            content = request.form.get("content")
+
+            cursor.execute("""
+                UPDATE pages SET slug = ?, title = ?, content = ?
+                WHERE id = ?
+            """, (slug, title, content, page_id))
+
+            return redirect("/admin/pages")
+
+        cursor.execute("SELECT * FROM pages WHERE id = ?", (page_id,))
+        row = cursor.fetchone()
+        if not row:
+            return "Page not found", 404
+
+        page = Page.from_row(row)
+
+    return render_template("admin_page_form.html", page=page, get_asset_path=get_asset_path, page_title="Edit Page", page_icon="✏️")
+

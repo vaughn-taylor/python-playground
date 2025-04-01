@@ -34,6 +34,10 @@
                     <a href="{{ url_for('dashboard.admin_panel') }}"
                         class="nav-link {% if '/admin' in request.path %}text-blue-600 dark:text-blue-400 underline{% endif %}">Admin</a>
                 </li>
+                <li>
+                    <a href="{{ url_for('dashboard.admin_pages') }}"
+                        class="nav-link {% if '/admin/pages' in request.path %}text-blue-600 dark:text-blue-400 underline{% endif %}">Pages</a>
+                </li>
             </ul>
 
             <!-- Dark Mode Toggle -->
@@ -53,6 +57,7 @@
         <a href="{{ url_for('dashboard.index') }}" class="nav-link">Dashboard</a>
         <a href="{{ url_for('logs.index') }}" class="nav-link">Logs</a>
         <a href="{{ url_for('dashboard.admin_panel') }}" class="nav-link">Admin</a>
+        <a href="{{ url_for('dashboard.admin_pages') }}" class="nav-link">Pages</a>
     </div>
 
     <!-- Drawer Nav Script -->

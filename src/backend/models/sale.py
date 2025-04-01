@@ -1,21 +1,20 @@
+from .base import BaseModel
 from datetime import datetime
 
-class Sale:
-    def __init__(self, id, date, total, refunds):
-        self.id = id
-        self.date = date
-        self.total = total
-        self.refunds = refunds
+class Sale(BaseModel):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-    @classmethod
-    def from_row(cls, row):
-        parsed_date = datetime.strptime(row["date"], "%Y-%m-%d")
-        return cls(
-            id=row["id"],
-            date=parsed_date,
-            total=row["total"],
-            refunds=row["refunds"]
-        )
+        # Convert date from string to datetime if needed
+        if isinstance(self.date, str):
+            self.date = datetime.strptime(self.date, "%Y-%m-%d")
 
     def __repr__(self):
         return f"<Sale {self.date}: ${self.total} ({self.refunds} refunds)>"
+
+    @classmethod
+    def from_row(cls, row):
+        return super().from_row(row)
+
+# Optional: silence Pylance "unused import" warning
+#_ = BaseModel
