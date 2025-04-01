@@ -12,7 +12,7 @@ dashboard_bp = Blueprint("dashboard", __name__)
 @dashboard_bp.route("/")
 def index():
     return render_template(
-        "index.html",
+        "frontend/index.html",
         get_asset_path=get_asset_path,
         page_title="Data Dashboard",
         page_icon="📊"
@@ -126,8 +126,17 @@ def api_mock_totals():
         "last_date": last_date
     })
 
-@dashboard_bp.route("/admin", methods=["GET", "POST"])
-def admin_panel():
+@dashboard_bp.route("/admin")
+def admin_dashboard():
+    return render_template(
+        "admin/dashboard.html",
+        page_title="Admin Dashboard",
+        page_icon="🛠️",
+        get_asset_path=get_asset_path
+    )
+
+@dashboard_bp.route("/admin/sales", methods=["GET", "POST"])
+def admin_sales():
     try:
         with get_db_cursor() as cursor:
             if request.method == "POST":
@@ -146,10 +155,10 @@ def admin_panel():
         sales = [Sale.from_row(r) for r in rows]
 
         return render_template(
-            "admin.html",
+            "admin/sales/list.html",  # ✅ correct template path
             get_asset_path=get_asset_path,
-            page_title="Admin",
-            page_icon="🛠️",
+            page_title="Sales",
+            page_icon="📊",
             sales=sales
         )
 
@@ -178,7 +187,7 @@ def edit_sale(sale_id):
             return "Sale not found", 404
 
         sale = Sale.from_row(row)
-        return render_template("edit_sale.html", sale=sale, get_asset_path=get_asset_path, page_title="Edit Sale", page_icon="✏️")
+        return render_template("admin/sales/list.html", sale=sale, get_asset_path=get_asset_path, page_title="Edit Sale", page_icon="✏️")
 
     except Exception as e:
         return f"Error: {e}", 500
@@ -201,7 +210,7 @@ def view_page(slug):
         if not row:
             return "Page not found", 404
         page = Page.from_row(row)
-    return render_template("page.html", page=page, page_title=page.title, get_asset_path=get_asset_path)
+    return render_template("frontend/page.html", page=page, page_title=page.title, get_asset_path=get_asset_path)
 
 
 @dashboard_bp.route("/admin/pages")
@@ -210,7 +219,7 @@ def admin_pages():
         cursor.execute("SELECT * FROM pages ORDER BY created_at DESC")
         rows = cursor.fetchall()
         pages = [Page.from_row(r) for r in rows]
-    return render_template("admin_pages.html", pages=pages, get_asset_path=get_asset_path, page_title="Pages", page_icon="📄")
+    return render_template("admin/pages/list.html", pages=pages, get_asset_path=get_asset_path, page_title="Pages", page_icon="📄")
 
 
 @dashboard_bp.route("/admin/pages/new", methods=["GET", "POST"])
@@ -229,7 +238,7 @@ def admin_new_page():
 
         return redirect("/admin/pages")
 
-    return render_template("admin_page_form.html", page=None, get_asset_path=get_asset_path, page_title="New Page", page_icon="➕")
+    return render_template("admin/pages/form.html", page=None, get_asset_path=get_asset_path, page_title="New Page", page_icon="➕")
 
 
 @dashboard_bp.route("/admin/pages/edit/<int:page_id>", methods=["GET", "POST"])
@@ -254,5 +263,5 @@ def admin_edit_page(page_id):
 
         page = Page.from_row(row)
 
-    return render_template("admin_page_form.html", page=page, get_asset_path=get_asset_path, page_title="Edit Page", page_icon="✏️")
+    return render_template("admin/pages/form.html", page=page, get_asset_path=get_asset_path, page_title="Edit Page", page_icon="✏️")
 

@@ -1,0 +1,22 @@
+{% extends "layout/base.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10 space-y-6">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">🛠️ Admin Dashboard</h1>
+    <p class="text-gray-600 dark:text-gray-300">Choose a section to manage:</p>
+
+    <ul class="space-y-3 mt-6">
+        <li>
+            <a href="{{ url_for('dashboard.admin_sales') }}"
+                class="block px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-gray-700 transition">
+                📊 Manage Sales
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('dashboard.admin_pages') }}"
+                class="block px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-gray-700 transition">
+                📄 Manage Pages
+            </a>
+        </li>
+    </ul>
+</div>
+{% endblock %}

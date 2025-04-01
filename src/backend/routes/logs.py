@@ -14,7 +14,7 @@ def index():
     files = get_log_files(log_type)
 
     return render_template(
-        "logs.html",
+        "frontend/logs.html",
         files=files,
         log_type=log_type,
         get_asset_path=get_asset_path,
@@ -22,7 +22,7 @@ def index():
         page_icon="📁"
     )
 
-@logs_bp.route("/view/<filename>")
+@logs_bp.route("frontend/view/<filename>")
 def view_file(filename):
     content = load_file_content(filename)
 
@@ -43,7 +43,7 @@ def download_file(filename):
         as_attachment=True
     )
 
-@logs_bp.route("/archive/<filename>")
+@logs_bp.route("frontend/archive/<filename>")
 def download_archive(filename):
     return send_from_directory(
         ARCHIVE_DIR,
@@ -51,7 +51,7 @@ def download_archive(filename):
         as_attachment=True
     )
 
-@logs_bp.route("/archive")
+@logs_bp.route("frontend/archive")
 def archive_index():
     archived_files = []
     try:
