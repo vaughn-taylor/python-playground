@@ -138,6 +138,10 @@ def admin_dashboard():
 @dashboard_bp.route("/admin/sales", methods=["GET", "POST"])
 def admin_sales():
     try:
+        page = int(request.args.get("page", 1))
+        per_page = 10
+        offset = (page - 1) * per_page
+
         with get_db_cursor() as cursor:
             if request.method == "POST":
                 date = request.form.get("date")
@@ -149,17 +153,26 @@ def admin_sales():
                     (date, total, refunds)
                 )
 
-            cursor.execute("SELECT id, date, total, refunds FROM sales ORDER BY date DESC LIMIT 25")
+            cursor.execute("SELECT COUNT(*) FROM sales")
+            total_sales = cursor.fetchone()[0]
+
+            cursor.execute(
+                "SELECT id, date, total, refunds FROM sales ORDER BY date DESC LIMIT ? OFFSET ?",
+                (per_page, offset)
+            )
             rows = cursor.fetchall()
 
         sales = [Sale.from_row(r) for r in rows]
 
         return render_template(
-            "admin/sales/list.html",  # ✅ correct template path
+            "admin/sales/list.html",
             get_asset_path=get_asset_path,
             page_title="Sales",
             page_icon="📊",
-            sales=sales
+            sales=sales,
+            current_page=page,
+            has_next=(offset + per_page < total_sales),
+            has_prev=(page > 1)
         )
 
     except Exception as e:
