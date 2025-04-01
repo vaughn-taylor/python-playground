@@ -265,3 +265,11 @@ def admin_edit_page(page_id):
 
     return render_template("admin/pages/form.html", page=page, get_asset_path=get_asset_path, page_title="Edit Page", page_icon="✏️")
 
+@dashboard_bp.route("/admin/pages/delete/<int:page_id>")
+def delete_page(page_id):
+    try:
+        with get_db_cursor() as cursor:
+            cursor.execute("DELETE FROM pages WHERE id = ?", (page_id,))
+        return redirect("/admin/pages")
+    except Exception as e:
+        return f"Error: {e}", 500

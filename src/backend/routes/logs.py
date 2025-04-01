@@ -22,12 +22,12 @@ def index():
         page_icon="📁"
     )
 
-@logs_bp.route("frontend/view/<filename>")
+@logs_bp.route("/view/<filename>")
 def view_file(filename):
     content = load_file_content(filename)
 
     return render_template(
-        "view.html",
+        "frontend/view.html",
         filename=filename,
         content=content,
         get_asset_path=get_asset_path,
@@ -43,7 +43,7 @@ def download_file(filename):
         as_attachment=True
     )
 
-@logs_bp.route("frontend/archive/<filename>")
+@logs_bp.route("/archive/<filename>")
 def download_archive(filename):
     return send_from_directory(
         ARCHIVE_DIR,
@@ -51,7 +51,7 @@ def download_archive(filename):
         as_attachment=True
     )
 
-@logs_bp.route("frontend/archive")
+@logs_bp.route("/archive")
 def archive_index():
     archived_files = []
     try:
@@ -69,7 +69,7 @@ def archive_index():
         print(f"Error loading archived logs: {e}")
 
     return render_template(
-        "archive.html",
+        "frontend/archive.html",
         files=sorted(archived_files, key=lambda f: f["modified"], reverse=True),
         get_asset_path=get_asset_path,
         page_title="Archived Logs",

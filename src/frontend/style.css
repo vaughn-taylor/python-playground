@@ -2,3 +2,4 @@
 
 @source "../backend/templates/**/*.html";
 @custom-variant dark (&:where(.dark, .dark *));
+@plugin "@tailwindcss/typography";
