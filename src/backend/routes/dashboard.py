@@ -1,9 +1,10 @@
+
 from flask import Blueprint, render_template, jsonify, request, redirect
 from src.backend.utils.assets import get_asset_path
+from src.backend.utils.db import get_db_cursor
+from src.backend.models.sale import Sale
 from datetime import datetime, timedelta
-import os
 import random
-import sqlite3
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
@@ -22,30 +23,24 @@ def api_sales():
     start = request.args.get("start")
     end = request.args.get("end")
 
-    db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'app.db'))
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
     try:
-        if start and end:
-            query = "SELECT date, total, refunds FROM sales WHERE date BETWEEN ? AND ? ORDER BY date"
-            cursor.execute(query, (start, end))
-        else:
-            query = "SELECT date, total, refunds FROM sales ORDER BY date"
-            cursor.execute(query)
+        with get_db_cursor() as cursor:
+            if start and end:
+                query = "SELECT date, total, refunds FROM sales WHERE date BETWEEN ? AND ? ORDER BY date"
+                cursor.execute(query, (start, end))
+            else:
+                query = "SELECT date, total, refunds FROM sales ORDER BY date"
+                cursor.execute(query)
 
-        rows = cursor.fetchall()
-        for date, total, refunds in rows:
-            sales_data.append({
-                "date": date,
-                "total": total,
-                "refunds": refunds
-            })
-
+            rows = cursor.fetchall()
+            for row in rows:
+                sales_data.append({
+                    "date": row["date"],
+                    "total": row["total"],
+                    "refunds": row["refunds"]
+                })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    finally:
-        conn.close()
 
     return jsonify(sales_data)
 
@@ -73,47 +68,42 @@ def api_totals():
     start = request.args.get("start")
     end = request.args.get("end")
 
-    db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'app.db'))
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
     try:
-        if start and end:
-            cursor.execute("""
-                SELECT
-                    SUM(total),
-                    SUM(refunds),
-                    AVG(total),
-                    MIN(date),
-                    MAX(date)
-                FROM sales
-                WHERE date BETWEEN ? AND ?
-            """, (start, end))
-        else:
-            cursor.execute("""
-                SELECT
-                    SUM(total),
-                    SUM(refunds),
-                    AVG(total),
-                    MIN(date),
-                    MAX(date)
-                FROM sales
-            """)
+        with get_db_cursor() as cursor:
+            if start and end:
+                cursor.execute("""
+                    SELECT
+                        SUM(total),
+                        SUM(refunds),
+                        AVG(total),
+                        MIN(date),
+                        MAX(date)
+                    FROM sales
+                    WHERE date BETWEEN ? AND ?
+                """, (start, end))
+            else:
+                cursor.execute("""
+                    SELECT
+                        SUM(total),
+                        SUM(refunds),
+                        AVG(total),
+                        MIN(date),
+                        MAX(date)
+                    FROM sales
+                """)
 
-        total, refunds, average, first_date, last_date = cursor.fetchone()
+            total, refunds, average, first_date, last_date = cursor.fetchone()
 
-        result = {
-            "total_sales": total or 0,
-            "total_refunds": refunds or 0,
-            "average_sales": round(average or 0, 2),
-            "first_date": first_date,
-            "last_date": last_date
-        }
+            result = {
+                "total_sales": total or 0,
+                "total_refunds": refunds or 0,
+                "average_sales": round(average or 0, 2),
+                "first_date": first_date,
+                "last_date": last_date
+            }
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    finally:
-        conn.close()
 
     return jsonify(result)
 
@@ -137,71 +127,66 @@ def api_mock_totals():
 
 @dashboard_bp.route("/admin", methods=["GET", "POST"])
 def admin_panel():
-    db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'app.db'))
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    try:
+        with get_db_cursor() as cursor:
+            if request.method == "POST":
+                date = request.form.get("date")
+                total = request.form.get("total")
+                refunds = request.form.get("refunds")
 
-    if request.method == "POST":
-        date = request.form.get("date")
-        total = request.form.get("total")
-        refunds = request.form.get("refunds")
+                cursor.execute(
+                    "INSERT INTO sales (date, total, refunds) VALUES (?, ?, ?)",
+                    (date, total, refunds)
+                )
 
-        cursor.execute(
-            "INSERT INTO sales (date, total, refunds) VALUES (?, ?, ?)",
-            (date, total, refunds)
+            cursor.execute("SELECT id, date, total, refunds FROM sales ORDER BY date DESC LIMIT 25")
+            rows = cursor.fetchall()
+
+        sales = [Sale.from_row(r) for r in rows]
+
+        return render_template(
+            "admin.html",
+            get_asset_path=get_asset_path,
+            page_title="Admin",
+            page_icon="🛠️",
+            sales=sales
         )
-        conn.commit()
 
-    cursor.execute("SELECT id, date, total, refunds FROM sales ORDER BY date DESC LIMIT 25")
-    rows = cursor.fetchall()
-    conn.close()
-
-    sales = [{"id": r[0], "date": r[1], "total": r[2], "refunds": r[3]} for r in rows]
-
-    return render_template(
-        "admin.html",
-        get_asset_path=get_asset_path,
-        page_title="Admin",
-        page_icon="🛠️",
-        sales=sales
-    )
+    except Exception as e:
+        return f"Error: {e}", 500
 
 @dashboard_bp.route("/admin/edit/<int:sale_id>", methods=["GET", "POST"])
 def edit_sale(sale_id):
-    db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'app.db'))
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    try:
+        with get_db_cursor() as cursor:
+            if request.method == "POST":
+                date = request.form.get("date")
+                total = request.form.get("total")
+                refunds = request.form.get("refunds")
 
-    if request.method == "POST":
-        date = request.form.get("date")
-        total = request.form.get("total")
-        refunds = request.form.get("refunds")
+                cursor.execute(
+                    "UPDATE sales SET date = ?, total = ?, refunds = ? WHERE id = ?",
+                    (date, total, refunds, sale_id)
+                )
+                return redirect("/admin")
 
-        cursor.execute(
-            "UPDATE sales SET date = ?, total = ?, refunds = ? WHERE id = ?",
-            (date, total, refunds, sale_id)
-        )
-        conn.commit()
-        conn.close()
-        return redirect("/admin")
+            cursor.execute("SELECT id, date, total, refunds FROM sales WHERE id = ?", (sale_id,))
+            row = cursor.fetchone()
 
-    cursor.execute("SELECT id, date, total, refunds FROM sales WHERE id = ?", (sale_id,))
-    row = cursor.fetchone()
-    conn.close()
+        if not row:
+            return "Sale not found", 404
 
-    if not row:
-        return "Sale not found", 404
+        sale = Sale.from_row(row)
+        return render_template("edit_sale.html", sale=sale, get_asset_path=get_asset_path, page_title="Edit Sale", page_icon="✏️")
 
-    sale = {"id": row[0], "date": row[1], "total": row[2], "refunds": row[3]}
-    return render_template("edit_sale.html", sale=sale, get_asset_path=get_asset_path, page_title="Edit Sale", page_icon="✏️")
+    except Exception as e:
+        return f"Error: {e}", 500
 
 @dashboard_bp.route("/admin/delete/<int:sale_id>")
 def delete_sale(sale_id):
-    db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'app.db'))
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    cursor.execute("DELETE FROM sales WHERE id = ?", (sale_id,))
-    conn.commit()
-    conn.close()
-    return redirect("/admin")
+    try:
+        with get_db_cursor() as cursor:
+            cursor.execute("DELETE FROM sales WHERE id = ?", (sale_id,))
+        return redirect("/admin")
+    except Exception as e:
+        return f"Error: {e}", 500

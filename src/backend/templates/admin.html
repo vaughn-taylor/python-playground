@@ -42,13 +42,14 @@
                     <th class="px-4 py-2">Date</th>
                     <th class="px-4 py-2">Total</th>
                     <th class="px-4 py-2">Refunds</th>
+                    <th class="px-4 py-2 text-right">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for sale in sales %}
                 <tr class="border-t border-gray-200 dark:border-gray-700">
-                    <td class="px-4 py-2">{{ sale.date }}</td>
-                    <td class="px-4 py-2">{{ sale.total }}</td>
+                    <td class="px-4 py-2">{{ sale.date.strftime("%b %d, %Y") }}</td>
+                    <td class="px-4 py-2">{{ sale.total | round(2) }}</td>
                     <td class="px-4 py-2">{{ sale.refunds }}</td>
                     <td class="px-4 py-2 text-right space-x-2">
                         <a href="{{ url_for('dashboard.edit_sale', sale_id=sale.id) }}"

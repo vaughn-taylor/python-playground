@@ -142,5 +142,5 @@ if (document.getElementById("salesChart")) {
         const end = document.getElementById('endDate')?.value;
         renderSalesChart(start, end);
         fetchAndShowSummary(start, end);
-    }, 60000);
+    }, 600000);
 }
