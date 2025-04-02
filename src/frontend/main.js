@@ -144,3 +144,30 @@ if (document.getElementById("salesChart")) {
         fetchAndShowSummary(start, end);
     }, 600000);
 }
+
+// TOAST-UI WYSIWYG
+
+import Editor from '@toast-ui/editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const el = document.querySelector('#editor');
+    if (el) {
+        const form = document.querySelector('form');
+        const hiddenInput = document.querySelector('input[name="content"]');
+
+        const editor = new Editor({
+            el,
+            height: '400px',
+            initialEditType: 'markdown',
+            previewStyle: 'vertical',
+            initialValue: hiddenInput.value || '',
+            placeholder: 'Write your page content here...',
+        });
+
+        // 🔁 Replace hidden input value on submit
+        form.addEventListener('submit', () => {
+            hiddenInput.value = editor.getMarkdown();
+        });
+    }
+});
