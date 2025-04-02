@@ -3,7 +3,7 @@
 {% block content %}
 
 <!-- Filter Form -->
-<div class="flex justify-between items-center mb-4">
+<div class="flex justify-between items-end mb-10">
     <form method="get">
         <label for="type" class="sr-only">Filter</label>
         <select name="type" id="type"
@@ -14,13 +14,12 @@
             <option value="summaries" {% if log_type=='summaries' %}selected{% endif %}>📊 Summaries Only</option>
         </select>
     </form>
+    <!-- File Count -->
+    <p class="text-sm text-gray-700 dark:text-gray-300">
+        Showing <strong>{{ files|length }}</strong> file(s)
+        {% if log_type %} (filtered by <code>{{ log_type }}</code>){% endif %}
+    </p>
 </div>
-
-<!-- File Count -->
-<p class="text-sm text-gray-700 dark:text-gray-300 mb-6">
-    Showing <strong>{{ files|length }}</strong> file(s)
-    {% if log_type %} (filtered by <code>{{ log_type }}</code>){% endif %}
-</p>
 
 <!-- File Cards -->
 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -34,6 +33,7 @@
 </div>
 
 <a href="{{ url_for('logs.archive_index') }}"
-    class="inline-flex justify-center items-center bg-red-500 text-white px-4 py-2 mt-8">🗃️ View Archived Logs</a>
+    class="inline-flex justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded shadow mt-6">View
+    Archived Logs</a>
 
 {% endblock %}

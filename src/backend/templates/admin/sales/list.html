@@ -1,75 +1,72 @@
 {% extends "layout/base.html" %}
 {% block content %}
-<div class="max-w-4xl mx-auto space-y-10">
 
-    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Sales</h1>
+<!-- Add Sale Form -->
+<form method="POST" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
+    <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-8">Add Sale Entry</h2>
 
-    <!-- Add Sale Form -->
-    <form method="POST" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
-        <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200">➕ Add Sale Entry</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-                <label for="date" class="block text-sm font-medium">Date</label>
-                <input type="date" name="date" required class="w-full mt-1 px-2 py-1 rounded border">
-            </div>
-            <div>
-                <label for="total" class="block text-sm font-medium">Total</label>
-                <input type="number" name="total" required class="w-full mt-1 px-2 py-1 rounded border">
-            </div>
-            <div>
-                <label for="refunds" class="block text-sm font-medium">Refunds</label>
-                <input type="number" name="refunds" required class="w-full mt-1 px-2 py-1 rounded border">
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label for="date" class="block text-sm font-medium">Date</label>
+            <input type="date" name="date" required class="w-full mt-1 px-2 py-1 rounded border">
         </div>
-
-        <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded shadow text-sm">
-            Add Sale
-        </button>
-    </form>
-
-    <!-- Sales Table -->
-    <div class="overflow-x-auto">
-        <h2 class="text-lg font-semibold mb-3">📄 Recent Sales</h2>
-        <table class="min-w-full bg-white dark:bg-gray-900 text-sm">
-            <thead>
-                <tr class="bg-gray-100 dark:bg-gray-800 text-left">
-                    <th class="px-4 py-2">Date</th>
-                    <th class="px-4 py-2">Total</th>
-                    <th class="px-4 py-2">Refunds</th>
-                    <th class="px-4 py-2 text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for sale in sales %}
-                <tr class="border-t border-gray-200 dark:border-gray-700">
-                    <td class="px-4 py-2">{{ sale.date.strftime("%Y-%m-%d") }}</td>
-                    <td class="px-4 py-2">{{ sale.total }}</td>
-                    <td class="px-4 py-2">{{ sale.refunds }}</td>
-                    <td class="px-4 py-2 text-right">
-                        <a href="{{ url_for('dashboard.edit_sale', sale_id=sale.id) }}"
-                            class="text-blue-600 hover:underline text-sm">✏️ Edit</a>
-                        <a href="{{ url_for('dashboard.delete_sale', sale_id=sale.id) }}"
-                            class="text-red-600 hover:underline text-sm ml-2"
-                            onclick="return confirm('Are you sure?');">🗑️ Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="mt-6 flex justify-between text-sm">
-            {% if has_prev %}
-            <a href="{{ url_for('dashboard.admin_sales', page=current_page - 1) }}"
-                class="text-blue-600 hover:underline">← Previous</a>
-            {% else %}
-            <span></span>
-            {% endif %}
-
-            {% if has_next %}
-            <a href="{{ url_for('dashboard.admin_sales', page=current_page + 1) }}"
-                class="text-blue-600 hover:underline">Next →</a>
-            {% endif %}
+        <div>
+            <label for="total" class="block text-sm font-medium">Total</label>
+            <input type="number" name="total" required class="w-full mt-1 px-2 py-1 rounded border">
+        </div>
+        <div>
+            <label for="refunds" class="block text-sm font-medium">Refunds</label>
+            <input type="number" name="refunds" required class="w-full mt-1 px-2 py-1 rounded border">
         </div>
     </div>
+
+    <button type="submit" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded shadow">
+        Add Sale
+    </button>
+</form>
+
+<!-- Sales Table -->
+<div class="overflow-x-auto mt-10">
+    <h2 class="text-lg font-semibold mb-8">Recent Sales</h2>
+    <table class="min-w-full bg-white dark:bg-gray-900 text-sm">
+        <thead>
+            <tr class="bg-gray-100 dark:bg-gray-800 text-left">
+                <th class="px-4 py-2">Date</th>
+                <th class="px-4 py-2">Total</th>
+                <th class="px-4 py-2">Refunds</th>
+                <th class="px-4 py-2 text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales %}
+            <tr class="border-t border-gray-200 dark:border-gray-700">
+                <td class="px-4 py-2">{{ sale.date.strftime("%Y-%m-%d") }}</td>
+                <td class="px-4 py-2">{{ sale.total }}</td>
+                <td class="px-4 py-2">{{ sale.refunds }}</td>
+                <td class="px-4 py-2 text-right">
+                    <a href="{{ url_for('dashboard.edit_sale', sale_id=sale.id) }}"
+                        class="text-blue-600 hover:underline text-sm">✏️ Edit</a>
+                    <a href="{{ url_for('dashboard.delete_sale', sale_id=sale.id) }}"
+                        class="text-red-600 hover:underline text-sm ml-2" onclick="return confirm('Are you sure?');">🗑️
+                        Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="mt-6 flex justify-between text-sm">
+        {% if has_prev %}
+        <a href="{{ url_for('dashboard.admin_sales', page=current_page - 1) }}" class="text-blue-600 hover:underline">←
+            Previous</a>
+        {% else %}
+        <span></span>
+        {% endif %}
+
+        {% if has_next %}
+        <a href="{{ url_for('dashboard.admin_sales', page=current_page + 1) }}"
+            class="text-blue-600 hover:underline">Next →</a>
+        {% endif %}
+    </div>
 </div>
+
 {% endblock %}
