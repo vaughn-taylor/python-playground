@@ -5,7 +5,10 @@ from src.backend.utils.db import get_db_cursor
 from src.backend.models.sale import Sale
 from src.backend.models.page import Page
 from datetime import datetime, timedelta
+from werkzeug.utils import secure_filename
 import random
+import os
+import uuid
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
@@ -286,3 +289,40 @@ def delete_page(page_id):
         return redirect("/admin/pages")
     except Exception as e:
         return f"Error: {e}", 500
+
+ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+
+@dashboard_bp.route("/admin/upload-image", methods=["POST"])
+def upload_page_image():
+    file = request.files.get("image")
+    if not file:
+        return jsonify({
+            'success': 0,
+            'message': 'No file selected. Please choose an image to upload.'
+        }), 400
+
+    _, ext = os.path.splitext(file.filename.lower())
+    if ext not in ALLOWED_IMAGE_EXTENSIONS:
+        return jsonify({
+            'success': 0,
+            'message': f'Unsupported file type: {ext}. Allowed types are: {", ".join(ALLOWED_IMAGE_EXTENSIONS)}.'
+        }), 400
+
+    safe_name = secure_filename(file.filename)
+    filename = f"{uuid.uuid4().hex}_{safe_name}"
+
+    upload_dir = os.path.join(dashboard_bp.root_path, '..', '..', '..', 'assets', 'pages')
+    os.makedirs(upload_dir, exist_ok=True)
+
+    try:
+        file_path = os.path.join(upload_dir, filename)
+        file.save(file_path)
+    except Exception as e:
+        return jsonify({
+            'success': 0,
+            'message': f"Something went wrong while saving the file: {str(e)}"
+        }), 500
+
+    file_url = f"/assets/pages/{filename}"
+    return jsonify({'success': 1, 'message': 'ok', 'url': file_url})
+

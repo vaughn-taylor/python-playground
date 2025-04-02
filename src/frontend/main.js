@@ -149,6 +149,7 @@ if (document.getElementById("salesChart")) {
 
 import Editor from '@toast-ui/editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
+import { showToast } from './toast.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const el = document.querySelector('#editor');
@@ -163,6 +164,42 @@ document.addEventListener('DOMContentLoaded', () => {
             previewStyle: 'vertical',
             initialValue: hiddenInput.value || '',
             placeholder: 'Write your page content here...',
+            hooks: {
+                addImageBlobHook: async (blob, callback) => {
+                    try {
+                        const formData = new FormData();
+                        formData.append("image", blob);
+
+                        const res = await fetch("/admin/upload-image", {
+                            method: "POST",
+                            body: formData,
+                        });
+
+                        const data = await res.json();
+                        if (data.success && data.url) {
+                            // 🧼 Clean alt text from original filename
+                            const rawName = blob.name || "uploaded-image";
+                            const altText = rawName
+                                .replace(/\.[^/.]+$/, "")       // Remove file extension
+                                .replace(/[_\s]+/g, "-")        // Replace spaces and underscores with dashes
+                                .replace(/[^\w\-]+/g, "")       // Remove non-word characters
+                                .toLowerCase();
+
+                            callback(data.url, altText);
+
+                            // ✅ Toast success
+                            showToast("Image uploaded successfully!", "success");
+                        } else {
+                            // ❌ Toast error from backend message
+                            showToast(data.message || "Image upload failed.", "error");
+                        }
+                    } catch (err) {
+                        console.error("Image upload error:", err);
+                        showToast("Upload failed: " + err.message, "error");
+                    }
+                }
+            }
+
         });
 
         // 🔁 Replace hidden input value on submit
