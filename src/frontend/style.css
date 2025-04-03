@@ -1,5 +1,5 @@
 @import "tailwindcss";
 
-@source "../backend/templates/**/*.html";
+@source "../backend/**/*.{html,py}";
 @custom-variant dark (&:where(.dark, .dark *));
 @plugin "@tailwindcss/typography";

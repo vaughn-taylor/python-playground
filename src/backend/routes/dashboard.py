@@ -1,5 +1,5 @@
 
-from flask import Blueprint, render_template, jsonify, request, redirect
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for
 from src.backend.utils.assets import get_asset_path
 from src.backend.utils.db import get_db_cursor
 from src.backend.models.sale import Sale
@@ -245,17 +245,33 @@ def admin_new_page():
         title = request.form.get("title")
         content = request.form.get("content")
         created_at = datetime.now().isoformat()
+        next_action = request.form.get("next_action", "list")
 
         with get_db_cursor() as cursor:
+            cursor.execute("SELECT id FROM pages WHERE slug = ?", (slug,))
+            existing = cursor.fetchone()
+            if existing:
+                # 👇 Show error inline (or flash, up to you)
+                error = f"A page with the slug '{slug}' already exists."
+                return render_template(
+                    "admin/pages/form.html",
+                    page={"slug": slug, "title": title, "content": content},
+                    get_asset_path=get_asset_path,
+                    page_title="New Page",
+                    page_icon="➕",
+                    error=error
+                )
+
             cursor.execute("""
                 INSERT INTO pages (slug, title, content, created_at)
                 VALUES (?, ?, ?, ?)
             """, (slug, title, content, created_at))
 
-        return redirect("/admin/pages")
+        if next_action == "view":
+            return redirect(url_for("dashboard.view_page", slug=slug))
+        return redirect(url_for("dashboard.admin_pages"))
 
     return render_template("admin/pages/form.html", page=None, get_asset_path=get_asset_path, page_title="New Page", page_icon="➕")
-
 
 @dashboard_bp.route("/admin/pages/edit/<int:page_id>", methods=["GET", "POST"])
 def admin_edit_page(page_id):
@@ -264,13 +280,16 @@ def admin_edit_page(page_id):
             slug = request.form.get("slug")
             title = request.form.get("title")
             content = request.form.get("content")
+            next_action = request.form.get("next_action", "list")
 
             cursor.execute("""
                 UPDATE pages SET slug = ?, title = ?, content = ?
                 WHERE id = ?
             """, (slug, title, content, page_id))
 
-            return redirect("/admin/pages")
+            if next_action == "view":
+                return redirect(url_for("dashboard.view_page", slug=slug))
+            return redirect(url_for("dashboard.admin_pages"))
 
         cursor.execute("SELECT * FROM pages WHERE id = ?", (page_id,))
         row = cursor.fetchone()

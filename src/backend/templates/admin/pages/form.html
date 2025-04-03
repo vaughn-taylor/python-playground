@@ -1,7 +1,23 @@
 {% extends "layout/base.html" %}
 {% block content %}
 
+{% if error %}
+<div class="mb-4 p-3 bg-red-100 text-rose-800 rounded-xl">
+    {{ error }}
+</div>
+{% endif %}
+
 <form method="POST" class="bg-white dark:bg-gray-800 p-6 rounded-xl space-y-6 mt-8">
+    <input type="hidden" name="next_action" value="list">
+    <div class="flex flex-end justify-end w-full">
+        <a href="{{ url_for('dashboard.admin_pages') }}"
+            class="inline-flex justify-center items-center px-4 py-2 bg-gray-400 hover:bg-gray-700 text-white text-sm rounded">
+            Cancel
+        </a>
+        <button type="submit"
+            class="inline-flex justify-center items center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded ml-3">
+            Save</button>
+    </div>
     <div>
         <label class="block text-sm text-gray-700 dark:text-gray-200 font-semibold mb-1">Slug</label>
         <input type="text" name="slug" required value="{{ page.slug if page else '' }}"
@@ -17,11 +33,6 @@
         <input type="hidden" name="content" value="{{ page.content if page else '' }}">
         <!-- Toast UI attaches here -->
         <div id="editor" class="bg-gray-200 rounded-xl"></div>
-    </div>
-    <div class="flex flex-end justify-end w-full">
-        <button type="submit"
-            class="inline-flex justify-center items center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded">
-            Save</button>
     </div>
 </form>
 

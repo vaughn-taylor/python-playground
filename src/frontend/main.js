@@ -151,19 +151,33 @@ import Editor from '@toast-ui/editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { showToast } from './toast.js';
 
+// Prism syntax highlighting plugin
+import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.css'; // Or choose another Prism theme
+import './plugins/prism-tomorrow.css'; // Front end rendering
+
+// Optionally add specific languages you want to highlight
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-javascript';
+
 document.addEventListener('DOMContentLoaded', () => {
     const el = document.querySelector('#editor');
     if (el) {
         const form = document.querySelector('form');
         const hiddenInput = document.querySelector('input[name="content"]');
+        const submitBtn = form?.querySelector('button[type="submit"]');
 
         const editor = new Editor({
             el,
-            height: '400px',
-            initialEditType: 'markdown',
-            previewStyle: 'vertical',
+            height: '600px',
+            initialEditType: 'wysiwyg',
+            previewStyle: 'tab',
             initialValue: hiddenInput.value || '',
             placeholder: 'Write your page content here...',
+            plugins: [[codeSyntaxHighlight, { highlighter: Prism }]],
             hooks: {
                 addImageBlobHook: async (blob, callback) => {
                     try {
@@ -177,20 +191,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const data = await res.json();
                         if (data.success && data.url) {
-                            // 🧼 Clean alt text from original filename
                             const rawName = blob.name || "uploaded-image";
                             const altText = rawName
-                                .replace(/\.[^/.]+$/, "")       // Remove file extension
-                                .replace(/[_\s]+/g, "-")        // Replace spaces and underscores with dashes
-                                .replace(/[^\w\-]+/g, "")       // Remove non-word characters
+                                .replace(/\.[^/.]+$/, "")
+                                .replace(/[_\s]+/g, "-")
+                                .replace(/[^\w\-]+/g, "")
                                 .toLowerCase();
 
                             callback(data.url, altText);
-
-                            // ✅ Toast success
                             showToast("Image uploaded successfully!", "success");
                         } else {
-                            // ❌ Toast error from backend message
                             showToast(data.message || "Image upload failed.", "error");
                         }
                     } catch (err) {
@@ -199,12 +209,65 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-
         });
 
         // 🔁 Replace hidden input value on submit
         form.addEventListener('submit', () => {
             hiddenInput.value = editor.getMarkdown();
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                submitBtn.innerText = 'Saving...';
+            }
         });
+    }
+});
+
+// =========================
+// 🔦 Prism Front-End Highlighting
+// =========================
+
+document.addEventListener('DOMContentLoaded', () => {
+    Prism.highlightAll();
+});
+
+// =========================
+// Add Keyboard Commands
+// =========================
+
+document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    const isModifier = e.ctrlKey || e.metaKey;
+
+    const form = document.querySelector('form');
+    const submitBtn = form?.querySelector('button[type="submit"]');
+
+    // ⌘ + S → save and go to list
+    if (isModifier && !e.shiftKey && key === 's') {
+        e.preventDefault();
+        if (form) {
+            form.querySelector('input[name="next_action"]').value = 'list';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                submitBtn.innerText = 'Saving...';
+            }
+            form.requestSubmit();
+        }
+    }
+
+    // ⌘ + ⇧ + S → save and go to view page
+    if (isModifier && e.shiftKey && key === 's') {
+        e.preventDefault();
+        if (form) {
+            form.querySelector('input[name="next_action"]').value = 'view';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                submitBtn.innerText = 'Saving...';
+            }
+            form.requestSubmit();
+        }
     }
 });

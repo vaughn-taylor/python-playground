@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.17",
-    "@toast-ui/editor": "^3.2.2",
+    "@toast-ui/editor": "^3.1.0",
+    "@toast-ui/editor-plugin-code-syntax-highlight": "^3.1.0",
     "chart.js": "^4.4.8",
+    "prismjs": "^1.30.0",
     "tailwindcss": "^4.0.17"
   },
   "devDependencies": {
