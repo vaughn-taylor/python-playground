@@ -271,3 +271,150 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// CHATBOX //
+
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("chat-form")
+    const input = document.getElementById("user-input")
+    const chatBox = document.getElementById("chat-box")
+    const chatStatus = document.getElementById("chat-status")
+    const toggleDarkBtn = document.getElementById("toggle-dark")
+    const chatScroll = document.getElementById("chat-scroll")
+    const pauseButton = document.getElementById("pause-button")
+    let paused = false
+
+    input?.focus()
+
+    // 🛑 PAUSE BUTTON: Attach once
+    pauseButton?.addEventListener("click", () => {
+        paused = true
+    })
+
+    // 🖱️ Redirect scroll to chat-scroll even if mouse is outside it
+    if (chatScroll) {
+        window.addEventListener("wheel", (e) => {
+            const isOverChat = e.target.closest("#chat-scroll")
+            if (!isOverChat) {
+                chatScroll.scrollTop += e.deltaY
+                e.preventDefault()
+            }
+        }, { passive: false })
+    }
+
+    // ⛔ Bail early if not on chat page
+    if (!form || !input || !chatBox) return
+
+    // ✏️ Auto-expand input
+    input.addEventListener("input", () => {
+        input.style.height = "auto"
+        input.style.height = `${input.scrollHeight}px`
+    })
+
+    // ⌘ + Enter or Ctrl + Enter to submit
+    input.addEventListener("keydown", (e) => {
+        const isMac = navigator.userAgentData
+            ? navigator.userAgentData.platform === "macOS"
+            : navigator.userAgent.toLowerCase().includes("mac")
+        const isCmdEnter = isMac
+            ? (e.metaKey && e.key === "Enter")
+            : (e.ctrlKey && e.key === "Enter")
+        if (isCmdEnter) {
+            e.preventDefault()
+            form.requestSubmit()
+        }
+    })
+
+    // 🌓 Dark mode toggle
+    if (toggleDarkBtn) {
+        toggleDarkBtn.addEventListener("click", () => {
+            document.documentElement.classList.toggle("dark")
+            const isDark = document.documentElement.classList.contains("dark")
+            localStorage.setItem("theme", isDark ? "dark" : "light")
+        })
+
+        const savedTheme = localStorage.getItem("theme")
+        if (savedTheme === "dark") {
+            document.documentElement.classList.add("dark")
+        }
+    }
+
+    // 💬 Submit chat
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault()
+        const message = input.value.trim()
+        if (!message) return
+
+        // 🎤 Show user message
+        const userMessageEl = document.createElement("div")
+        userMessageEl.className =
+            "relative flex justify-start items-baseline w-9/10 ml-auto bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-6 opacity-0 translate-y-4 transition-all duration-300"
+        userMessageEl.innerHTML = `
+        <svg class="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-500 fill-indigo-800 dark:fill-indigo-200"
+             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg>
+        ${message}
+        `
+        chatBox.appendChild(userMessageEl)
+        setTimeout(() => {
+            userMessageEl.classList.remove("opacity-0", "translate-y-4")
+        }, 10)
+
+        input.value = ""
+        input.style.height = "auto"
+        chatStatus?.classList.remove("hidden")
+        pauseButton?.classList.remove("hidden")
+        paused = false
+
+        try {
+            const res = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message }),
+            })
+
+            const reader = res.body.getReader()
+            const decoder = new TextDecoder()
+            let llmResponse = ""
+
+            const llmMessageEl = document.createElement("div")
+            llmMessageEl.className =
+                "relative flex justify-start items-baseline w-full bg-gray-200 dark:bg-gray-800 p-4 rounded-lg mb-6 whitespace-pre-wrap opacity-0 translate-y-4 transition-all duration-300"
+            llmMessageEl.innerHTML = `
+                <svg class="absolute -top-3 -left-3 w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-500 fill-indigo-800 dark:fill-indigo-200"
+                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm177.6 62.1C192.8 334.5 218.8 352 256 352s63.2-17.5 78.4-33.9c9-9.7 24.2-10.4 33.9-1.4s10.4 24.2 1.4 33.9c-22 23.8-60 49.4-113.6 49.4s-91.7-25.5-113.6-49.4c-9-9.7-8.4-24.9 1.4-33.9s24.9-8.4 33.9 1.4zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+                <span id="llm-stream-text"></span>
+            `
+            chatBox.appendChild(llmMessageEl)
+            const streamSpan = llmMessageEl.querySelector("#llm-stream-text")
+
+            setTimeout(() => {
+                llmMessageEl.classList.remove("opacity-0", "translate-y-4")
+            }, 10)
+
+            while (true) {
+                if (paused) break
+
+                const { value, done } = await reader.read()
+                if (done) break
+
+                const chunk = decoder.decode(value, { stream: true })
+                llmResponse += chunk
+                streamSpan.textContent = llmResponse
+                chatScroll.scrollTop = chatScroll.scrollHeight
+            }
+
+            pauseButton?.classList.add("hidden")
+            chatStatus?.classList.add("hidden")
+
+            chatScroll.scrollTo({
+                top: chatScroll.scrollHeight,
+                behavior: "smooth"
+            })
+
+        } catch (err) {
+            chatBox.innerHTML += `<div class="text-red-500">⚠️ Error: ${err.message}</div>`
+            chatStatus?.classList.add("hidden")
+            pauseButton?.classList.add("hidden")
+        }
+    })
+})
