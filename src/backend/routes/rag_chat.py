@@ -1,7 +1,6 @@
-from flask import Blueprint, request, stream_with_context, Response, render_template
+from flask import Blueprint, request, jsonify, render_template
 from sentence_transformers import SentenceTransformer
 import requests
-import json
 import time
 import os
 
@@ -10,12 +9,12 @@ from rag.retriever import query as retrieve_chunks
 rag_chat_bp = Blueprint('rag_chat', __name__)
 EMBED_MODEL = "all-MiniLM-L6-v2"
 OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mistral")  # e.g. mistral, llama2
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mistral")
 
 embedder = SentenceTransformer(EMBED_MODEL)
 
 def estimate_tokens(text):
-    return int(len(text.split()) * 1.3)  # rough heuristic
+    return int(len(text.split()) * 1.3)
 
 def trim(text, word_limit=200):
     return " ".join(text.split()[:word_limit])
@@ -36,7 +35,6 @@ def format_chunk(source, chunk, max_items=20):
             return f"[Source: {source}]\n{bullets}"
         else:
             return f"[Source: {source}]\n{trim(chunk)}"
-
     except Exception as e:
         print("❌ Chunk formatting failed:", e)
         return f"[Source: {source}]\n{trim(chunk)}"
@@ -45,10 +43,11 @@ def format_chunk(source, chunk, max_items=20):
 def rag_chat():
     user_input = request.json.get("message", "")
     if not user_input.strip():
-        return {"error": "Empty message"}, 400
+        return jsonify({"error": "Empty message"}), 400
 
     print("🔹 Step 1: Embedding user input...", flush=True)
     start_embed = time.time()
+
     print(f"✅ Embedding done in {time.time() - start_embed:.2f}s")
 
     print("🔹 Step 2: In-memory retrieval...", flush=True)
@@ -57,9 +56,12 @@ def rag_chat():
     print(f"✅ Retrieved {len(top_chunks)} chunks in {time.time() - start_query:.2f}s", flush=True)
 
     if not top_chunks:
-        return {"response": "Sorry, I couldn't find any relevant information."}
+        return jsonify({
+            "response": "Sorry, I couldn't find any relevant information.",
+            "duration": 0.0
+        })
 
-    # 🔹 Step 3: Prompt building
+    # Prompt construction
     context = "\n\n".join(
         format_chunk(meta.get('source', 'unknown'), chunk)
         for chunk, meta in top_chunks
@@ -81,26 +83,30 @@ Answer:"""
     print(f"🧠 Prompt ready. Total prep time: {time.time() - start_embed:.2f}s", flush=True)
     print("🚀 Sending prompt to Ollama...", flush=True)
 
-    def generate():
-        try:
-            start_ollama = time.time()
-            res = requests.post(OLLAMA_URL, json={
-                "model": OLLAMA_MODEL,
-                "prompt": prompt,
-                "stream": False  # ⛔ Turn on later with: "stream": True
-            })
+    # Request Ollama
+    start_ollama = time.time()
+    try:
+        res = requests.post(OLLAMA_URL, json={
+            "model": OLLAMA_MODEL,
+            "prompt": prompt,
+            "stream": False
+        })
 
-            duration = time.time() - start_ollama
-            print(f"[FLASK] 📬 Ollama response in {duration:.2f}s", flush=True)
+        duration = time.time() - start_ollama
+        print(f"[FLASK] 📬 Ollama response in {duration:.2f}s", flush=True)
 
-            data = res.json()
-            yield data.get("response", "") + "\n"
+        data = res.json()
+        return jsonify({
+            "response": data.get("response", ""),
+            "duration": round(duration, 2)
+        })
 
-        except requests.exceptions.RequestException as e:
-            print("❌ Request to Ollama failed:", e)
-            yield "Error: LLM request failed.\n"
-
-    return Response(stream_with_context(generate()), content_type='text/plain')
+    except requests.exceptions.RequestException as e:
+        print("❌ Request to Ollama failed:", e)
+        return jsonify({
+            "response": "Error: LLM request failed.",
+            "duration": 0.0
+        })
 
 @rag_chat_bp.route("/rag-chat", methods=["GET"])
 def rag_chat_page():
@@ -128,11 +134,11 @@ def quick_test():
         print(f"[TEST] ✅ Ollama responded in {elapsed:.2f}s", flush=True)
 
         data = res.json()
-        return {
+        return jsonify({
             "response": data.get("response", ""),
             "time": round(elapsed, 2)
-        }
+        })
 
     except Exception as e:
         print("[TEST] ❌ Error during quick test:", e)
-        return {"error": str(e)}, 500
+        return jsonify({"error": str(e)}), 500

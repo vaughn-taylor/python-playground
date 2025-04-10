@@ -1,4 +1,3 @@
-// rag_chat.js
 export function initRagChat() {
     const form = document.getElementById("chat-form")
     const input = document.getElementById("user-input")
@@ -83,8 +82,7 @@ export function initRagChat() {
         input.value = ""
         input.style.height = "auto"
         chatStatus?.classList.remove("hidden")
-        pauseButton?.classList.remove("hidden")
-        pauseButton.textContent = "Pause"
+        pauseButton?.classList.add("hidden")
         paused = false
 
         try {
@@ -94,50 +92,26 @@ export function initRagChat() {
                 body: JSON.stringify({ message }),
             })
 
-            const reader = res.body.getReader()
-            const decoder = new TextDecoder()
-            let llmResponse = ""
+            const data = await res.json()
 
             const llmMessageEl = document.createElement("div")
             llmMessageEl.className =
-                "relative flex justify-start items-baseline w-full bg-gray-200 dark:bg-gray-800 p-4 rounded-lg mb-6 whitespace-pre-wrap opacity-0 translate-y-4 transition-all duration-300"
+                "relative flex flex-col justify-start w-full bg-gray-200 dark:bg-gray-800 p-4 rounded-lg mb-6 whitespace-pre-wrap opacity-0 translate-y-4 transition-all duration-300"
             llmMessageEl.innerHTML = `
-          <svg class="absolute -top-3 -left-3 w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-500 fill-indigo-800 dark:fill-indigo-200"
-               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"/>
-          </svg>
-          <span id="llm-stream-text"></span>
-        `
+                <svg class="absolute -top-3 -left-3 w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-500 fill-indigo-800 dark:fill-indigo-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"/>
+                </svg>
+                <div class="flex items-start gap-2">
+                    <span>${data.response}</span>
+                </div>
+                <div class="mt-3 text-sm text-gray-600 dark:text-gray-400">⏱️ Response time: ${data.duration}s</div>
+            `
             chatBox.appendChild(llmMessageEl)
-            const streamSpan = llmMessageEl.querySelector("#llm-stream-text")
 
             setTimeout(() => {
                 llmMessageEl.classList.remove("opacity-0", "translate-y-4")
             }, 10)
 
-            while (true) {
-                // Wait while paused
-                if (paused) {
-                    await new Promise(resolve => {
-                        const interval = setInterval(() => {
-                            if (!paused) {
-                                clearInterval(interval)
-                                resolve()
-                            }
-                        }, 100)
-                    })
-                }
-
-                const { value, done } = await reader.read()
-                if (done) break
-
-                const chunk = decoder.decode(value, { stream: true })
-                llmResponse += chunk
-                streamSpan.textContent += chunk
-                chatScroll.scrollTop = chatScroll.scrollHeight
-            }
-
-            pauseButton?.classList.add("hidden")
             chatStatus?.classList.add("hidden")
 
             chatScroll.scrollTo({

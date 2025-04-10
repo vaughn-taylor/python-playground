@@ -3,6 +3,8 @@
 from sentence_transformers import SentenceTransformer
 from chromadb import PersistentClient
 import numpy as np
+import os
+import re
 
 EMBED_MODEL = "all-MiniLM-L6-v2"
 CHROMA_DIR = "./rag/chroma_db"
@@ -34,18 +36,26 @@ else:
     chunks, embeddings, metadatas = zip(*valid_data)
     emb_matrix = np.array(embeddings)
 
-    sources = sorted(set(meta.get("source", "unknown") for meta in metadatas))
+    # Clean and group by normalized filenames
+    def clean_filename(filename):
+        return os.path.splitext(filename)[0].lower().strip()
+
+    sources = sorted(set(clean_filename(meta.get("source", "unknown")) for meta in metadatas))
     source_lookup = {src: [] for src in sources}
     for chunk, meta in zip(chunks, metadatas):
-        source_lookup[meta.get("source", "unknown")].append((chunk, meta))
+        src_clean = clean_filename(meta.get("source", "unknown"))
+        source_lookup[src_clean].append((chunk, meta))
 
     source_embeddings = embedder.encode(sources)
-    print(f"✅ Loaded {len(chunks)} chunks from {len(sources)} source files.")
+    print(f"✅ Loaded {len(chunks)} chunks from {len(sources)} cleaned sources.")
 
 def cosine_similarity(a, b):
     a = np.array(a)
     b = np.array(b)
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10)
+
+def extract_keywords(text):
+    return set(re.findall(r'\w+', text.lower()))
 
 def query(user_text, top_k=5):
     if not chunks or emb_matrix.size == 0:
@@ -54,10 +64,10 @@ def query(user_text, top_k=5):
 
     query_vec = embedder.encode([user_text])[0]
 
-    # 🔍 Match the query against source filenames
+    # 🔍 Match query against cleaned source names
     source_scores = [cosine_similarity(query_vec, vec) for vec in source_embeddings]
     matched_sources = [
-        source for source, score in zip(source_lookup.keys(), source_scores)
+        src for src, score in zip(source_lookup.keys(), source_scores)
         if score >= SIMILARITY_THRESHOLD
     ]
     print(f"[RETRIEVER] 🧠 Matched sources: {matched_sources}")
