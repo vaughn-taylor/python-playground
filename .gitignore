@@ -31,3 +31,5 @@ logs/archive/
 coverage/
 htmlcov/
 .shopify
+/rag/chroma_db/6f9c4059-c22e-43f1-bd9e-8038735a30cc/length.bin
+/rag/chroma_db/chroma.sqlite3
