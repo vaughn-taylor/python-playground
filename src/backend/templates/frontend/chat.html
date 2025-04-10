@@ -1,6 +1,8 @@
 <!-- templates/chat.html -->
 {% extends "layout/base.html" %}
 
+{% set page_id = "mistral-chat" %}
+
 {% block content %}
 <div class="flex flex-col h-screen max-w-4xl mx-auto text-gray-900 dark:text-gray-100">
 
@@ -16,8 +18,7 @@
         <form id="chat-form"
             class="w-full h-36 bg-gray-800 rounded-2xl p-4 flex flex-col justify-between gap-2 shadow-lg">
             <textarea id="user-input" name="message" rows="3" placeholder="Ask anything"
-                class="w-full resize-none bg-gray-800 text-base p-2 focus:outline-none focus:ring-0 dark:text-white"
-                required></textarea>
+                class="w-full resize-none bg-gray-800 text-base p-2 focus:outline-none focus:ring-0 dark:text-white"></textarea>
             <div class="flex justify-end items-center">
                 <!-- ⏳ Thinking indicator -->
                 <div id="chat-status" class="text-sm text-gray-500 dark:text-gray-400 hidden mr-3">

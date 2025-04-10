@@ -33,4 +33,4 @@ def chat():
 
 @chat_bp.route('/chat', methods=['GET'])
 def chat_page():
-    return render_template('frontend/chat.html', page_title="Local LLM Chat")
+    return render_template('frontend/chat.html', page_title="Local LLM Chat", page_id="mistral-chat")

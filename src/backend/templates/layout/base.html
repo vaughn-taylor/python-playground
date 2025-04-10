@@ -26,7 +26,8 @@
 </head>
 
 <body
-    class="min-h-screen bg-gray-300 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans px-10 py-6 overflow-hidden">
+    class="min-h-screen bg-gray-300 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans px-10 py-6 overflow-hidden"
+    data-page="{{ page_id | default('') }}">
 
     {% include 'components/navbar.html' %}
 

@@ -2,10 +2,19 @@
   "name": "flask-vite-tailwind",
   "version": "2.0.0",
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail -n VITE,FLASK -c yellow,blue \"vite build --watch\" \"sleep 0.5 && python run.py\"",
+    "dev": "concurrently --kill-others-on-fail -n VITE,FLASK -c yellow,blue \"vite build --watch\" \"sleep 0.5 && python3.11 run.py\"",
+    "dev-llm": "concurrently --kill-others-on-fail -n OLLAMA-SERVE,OLLAMA-RUN,VITE,FLASK -c gray,magenta,yellow,blue \"ollama serve\" \"sleep 2 && ollama run mistral\" \"vite build --watch\" \"sleep 0.5 && python3.11 run.py\"",
+    "start-ollama": "npm run stop-ollama && concurrently --kill-others-on-fail -n OLLAMA-SERVE,OLLAMA-RUN -c gray,magenta \"ollama serve\" \"sleep 2 && ollama run llama3\"",
+    "stop-ollama": "pkill -f 'ollama run' || true && pkill -f 'ollama serve' || true",
+    "start-venv": "source venv/bin/activate",
+    "stop-venv": "deactivate",
     "watch": "vite build --watch",
-    "flask": "flask run",
-    "build": "vite build"
+    "flask": "python3.11 run.py",
+    "build": "vite build",
+    "dev-llama3": "concurrently --kill-others-on-fail -n OLLAMA-SERVE,OLLAMA-RUN,VITE,FLASK -c gray,magenta,yellow,blue \"ollama serve\" \"sleep 2 && ollama run ${OLLAMA_MODEL:-llama3}\" \"vite build --watch\" \"sleep 3 && OLLAMA_MODEL=${OLLAMA_MODEL:-llama3} venv/bin/python run.py\"",
+    "dev-mistral": "cross-env OLLAMA_MODEL=mistral concurrently --kill-others-on-fail -n OLLAMA-SERVE,VITE,FLASK -c gray,yellow,blue \"ollama serve\" \"vite build --watch\" \"sleep 3 && venv/bin/python run.py\"",
+    "dev-m": "concurrently --kill-others-on-fail -n OLLAMA,VITE,FLASK -c gray,yellow,blue \"ollama serve\" \"vite build --watch\" \"sleep 2 && OLLAMA_MODEL=${OLLAMA_MODEL:-mistral} venv/bin/python run.py\""
+
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.17",
@@ -17,6 +26,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3"
   }
 }
