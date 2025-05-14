@@ -2,31 +2,23 @@
   "name": "flask-vite-tailwind",
   "version": "2.0.0",
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail -n VITE,FLASK -c yellow,blue \"vite build --watch\" \"sleep 0.5 && python3.11 run.py\"",
-    "dev-llm": "concurrently --kill-others-on-fail -n OLLAMA-SERVE,OLLAMA-RUN,VITE,FLASK -c gray,magenta,yellow,blue \"ollama serve\" \"sleep 2 && ollama run mistral\" \"vite build --watch\" \"sleep 0.5 && python3.11 run.py\"",
-    "start-ollama": "npm run stop-ollama && concurrently --kill-others-on-fail -n OLLAMA-SERVE,OLLAMA-RUN -c gray,magenta \"ollama serve\" \"sleep 2 && ollama run llama3\"",
-    "stop-ollama": "pkill -f 'ollama run' || true && pkill -f 'ollama serve' || true",
-    "start-venv": "source venv/bin/activate",
-    "stop-venv": "deactivate",
+    "dev": "concurrently --kill-others-on-fail -n VITE,FLASK -c yellow,blue \"vite build --watch\" \"sleep 0.5 && .venv/bin/python run.py\"",
+    "dev-llm": "concurrently --kill-others-on-fail -n OLLAMA,VITE,FLASK -c gray,yellow,blue \"ollama serve\" \"vite build --watch\" \"sleep 2 && OLLAMA_MODEL=${OLLAMA_MODEL:-mistral} python3.11 run.py\"",
+    "dev-llm-llama3": "cross-env OLLAMA_MODEL=llama3 npm run dev-llm",
+    "dev-llm-mistral": "cross-env OLLAMA_MODEL=mistral npm run dev-llm",
+    "build": "vite build",
     "watch": "vite build --watch",
     "flask": "python3.11 run.py",
-    "build": "vite build",
-    "dev-llama3": "concurrently --kill-others-on-fail -n OLLAMA-SERVE,OLLAMA-RUN,VITE,FLASK -c gray,magenta,yellow,blue \"ollama serve\" \"sleep 2 && ollama run ${OLLAMA_MODEL:-llama3}\" \"vite build --watch\" \"sleep 3 && OLLAMA_MODEL=${OLLAMA_MODEL:-llama3} venv/bin/python run.py\"",
-    "dev-mistral": "cross-env OLLAMA_MODEL=mistral concurrently --kill-others-on-fail -n OLLAMA-SERVE,VITE,FLASK -c gray,yellow,blue \"ollama serve\" \"vite build --watch\" \"sleep 3 && venv/bin/python run.py\"",
-    "dev-m": "concurrently --kill-others-on-fail -n OLLAMA,VITE,FLASK -c gray,yellow,blue \"ollama serve\" \"vite build --watch\" \"sleep 2 && OLLAMA_MODEL=${OLLAMA_MODEL:-mistral} venv/bin/python run.py\""
-
+    "start-ollama": "npm run stop-ollama && concurrently --kill-others-on-fail -n OLLAMA-SERVE,OLLAMA-RUN -c gray,magenta \"ollama serve\" \"sleep 2 && ollama run llama3\"",
+    "stop-ollama": "pkill -f 'ollama run' || true && pkill -f 'ollama serve' || true"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.17",
-    "@toast-ui/editor": "^3.1.0",
-    "@toast-ui/editor-plugin-code-syntax-highlight": "^3.1.0",
-    "chart.js": "^4.4.8",
-    "prismjs": "^1.30.0",
     "tailwindcss": "^4.0.17"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.16",
     "concurrently": "^9.1.2",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "marked": "^15.0.11"
   }
 }

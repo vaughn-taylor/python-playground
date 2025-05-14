@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Python Playground{% endblock %}</title>
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}" />
+    <meta name="apple-mobile-web-app-title" content="FiscalLens" />
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}" />
+
+    <!-- 🌒 Dark mode init (pre-Tailwind) -->
+    <script>
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const storedTheme = localStorage.getItem("theme");
+        const isDark = storedTheme === "dark" || (!storedTheme && prefersDark);
+        if (isDark) document.documentElement.classList.add("dark");
+    </script>
+
+    <link rel="stylesheet" href="{{ get_asset_path('main.css') }}">
+    <script type="module" src="{{ get_asset_path('main.js') }}"></script>
+
+    {% block head %}{% endblock %}
+</head>
+
+<body class="min-h-screen bg-gray-300 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans px-6 py-4"
+    data-page="{{ page_id | default('') }}">
+
+    {% include "components/navbar.html" %}
+
+    <main class="max-w-7xl mx-auto min-h-[70vh]">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include "components/footer.html" %}
+
+    <script>
+        document.getElementById("toggleDarkMode")?.addEventListener("click", () => {
+            const root = document.documentElement;
+            const isDark = root.classList.toggle("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+        });
+    </script>
+</body>
+
+</html>

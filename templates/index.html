@@ -1,0 +1,106 @@
+{% extends "layout/base.html" %}
+
+{% set page_id = "finance-chat" %}
+
+{% block content %}
+<div class="relative flex h-screen text-gray-900 dark:text-gray-100">
+
+    <button id="show-sidebar"
+        class="absolute top-4 left-4 z-50 bg-green-600 text-white text-xs px-2 py-1 rounded shadow hidden">
+        Show
+    </button>
+
+    <!-- 🧰 Tool Sidebar -->
+    <div id="tool-sidebar"
+        class="block w-72 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Available Tools</h2>
+            <button id="toggle-sidebar" class="bg-green-600 text-white text-xs px-2 py-1 rounded shadow">Hide</button>
+        </div>
+
+        <div class="space-y-6 text-sm">
+            <div>
+                <h3 class="font-semibold text-indigo-500 mb-1">Fundamental</h3>
+                <ul class="space-y-1">
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Show key metrics for {{symbol}} ">metrics</button></li>
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Get the income statement for {{symbol}} ">income</button></li>
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="What are the financial ratios of {{symbol}} ">ratios</button></li>
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Show valuation multiples for {{symbol}} ">multiples</button></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-indigo-500 mb-1">Valuation</h3>
+                <ul class="space-y-1">
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Get the latest stock quote for {{symbol}} ">quote</button></li>
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Show historical EPS for {{symbol}} ">historical eps</button></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-indigo-500 mb-1">Financials</h3>
+                <ul class="space-y-1">
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Income statement for {{symbol}} ">income</button></li>
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Balance sheet for {{symbol}} ">balance</button></li>
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Cash flow report for {{symbol}} ">cashflow</button></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-indigo-500 mb-1">Other</h3>
+                <ul class="space-y-1">
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="Company profile for {{symbol}} ">profile</button></li>
+                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                            data-prompt="List the current executives for {{symbol}} ">management</button></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 💬 Main Chat Interface -->
+    <div class="flex flex-col flex-1 max-w-4xl mx-auto">
+
+        <div class="w-full flex justify-end mb-4 pt-4 px-6">
+            <span class="text-sm bg-green-700 text-white border border-green-600 px-3 py-1 rounded-full shadow-sm">
+                Finance Agent: <code>OpenBB</code>
+            </span>
+        </div>
+
+        <!-- 🔽 Scrollable message area -->
+        <div id="chat-scroll" class="flex-1 overflow-y-auto px-6 pt-6 space-y-4 scroll-smooth pb-52">
+            <div id="chat-box" class="space-y-4 mb-6 px-8">
+                <!-- Chat messages will appear here -->
+            </div>
+        </div>
+
+        <!-- 💬 Sticky input form -->
+        <div class="sticky bottom-0 w-full pt-4 px-6 pb-6 bg-gray-900">
+            <form id="chat-form"
+                class="w-full h-36 bg-gray-800 rounded-2xl p-4 flex flex-col justify-between gap-2 shadow-lg">
+                <textarea id="user-input" name="query" rows="3"
+                    placeholder="Ask about a stock, market trend, valuation..."
+                    class="w-full resize-none bg-gray-800 text-base p-2 focus:outline-none focus:ring-0 dark:text-white"
+                    required></textarea>
+
+                <div class="flex justify-end items-center">
+                    <div id="chat-status" class="text-sm text-gray-400 hidden mr-3">
+                        <span class="animate-pulse text-green-400">Analyzing...</span>
+                    </div>
+                    <button type="submit"
+                        class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
+                        Analyze
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

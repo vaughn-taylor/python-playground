@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@source "../{templates,routes,utils}/**/*.{html,py}";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Typography overrides */
+.markdown-body {
+  p {
+    @apply mb-4;
+  }
+  li {
+    @apply mb-3;
+  }
+}

@@ -1,11 +1,12 @@
 # run.py
 import os
-from src.backend.app import create_app
+from dotenv import load_dotenv
 
-MODEL_NAME = os.environ.get("OLLAMA_MODEL", "llama3")
-OLLAMA_URL = "http://localhost:11434/api/generate"
+load_dotenv()
+
+from app import create_app
 
 app = create_app()
 
-# 🚀 Start Flask
-app.run(debug=True, port=5050)
+if __name__ == "__main__":
+    app.run(debug=True, port=5050)
