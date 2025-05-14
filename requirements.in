@@ -1,0 +1,8 @@
+# requirements.in — Clean baseline for Flask + Tailwind + Vite
+
+flask
+python-dotenv
+pip-tools
+pytest
+requests  # Optional; remove if unused
+markdown  # Optional; remove if unused
