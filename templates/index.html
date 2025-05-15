@@ -5,59 +5,72 @@
 {% block content %}
 <div class="relative flex h-screen text-gray-900 dark:text-gray-100">
 
-    <button id="show-sidebar"
-        class="absolute top-4 left-4 z-50 bg-green-600 text-white text-xs px-2 py-1 rounded shadow hidden">
-        Show
-    </button>
+    <div id="toggle-wrapper"
+        class="absolute left-0 z-0 p-0 w-60 h-full border-r border-gray-700 transition duration-200 ease-in">
+        <button id="toggle-sidebar"
+            class="absolute top-0 -right-[21px] z-50 bg-gray-600 text-white text-xs px-0 py-8 rounded-tr rounded-br shadow">
+            <span class="sr-only">Hide</span>
+            <span class="text-[9px] mb-6 text-gray-300 uppercase tracking-wider font-medium"
+                style="writing-mode: vertical-rl;">prompts</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="w-5 h-5 fill-white">
+                <path
+                    d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z" />
+            </svg>
+        </button>
+        <button id="show-sidebar"
+            class="absolute top-0 left-0 z-50 bg-gray-600 text-white text-xs px-0 py-8 rounded-tr rounded-br shadow hidden">
+            <span class="sr-only">Show</span>
+            <span class="text-[9px] mb-6 text-gray-300 uppercase tracking-wider font-medium"
+                style="writing-mode: vertical-rl;">prompts</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="w-5 h-5 fill-white">
+                <path
+                    d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z" />
+            </svg>
+        </button>
+    </div>
 
     <!-- 🧰 Tool Sidebar -->
-    <div id="tool-sidebar"
-        class="block w-72 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Available Tools</h2>
-            <button id="toggle-sidebar" class="bg-green-600 text-white text-xs px-2 py-1 rounded shadow">Hide</button>
-        </div>
-
+    <div id="tool-sidebar" class="block z-10 w-60 bg-transparen p-4 overflow-y-hidden overscroll-contain">
         <div class="space-y-6 text-sm">
             <div>
-                <h3 class="font-semibold text-indigo-500 mb-1">Fundamental</h3>
+                <h3 class="font-semibold text-gray-300 mb-3">Fundamental</h3>
                 <ul class="space-y-1">
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Show key metrics for {{symbol}}">metrics</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Get the income statement for {{symbol}}">income</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="What are the financial ratios of {{symbol}}">ratios</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Show valuation multiples for {{symbol}}">multiples</button></li>
                 </ul>
             </div>
             <div>
-                <h3 class="font-semibold text-indigo-500 mb-1">Valuation</h3>
+                <h3 class="font-semibold text-gray-300 mb-3">Valuation</h3>
                 <ul class="space-y-1">
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Get the latest stock quote for {{symbol}}">quote</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Show historical EPS for {{symbol}}">historical eps</button></li>
                 </ul>
             </div>
             <div>
-                <h3 class="font-semibold text-indigo-500 mb-1">Financials</h3>
+                <h3 class="font-semibold text-gray-300 mb-3">Financials</h3>
                 <ul class="space-y-1">
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Income statement for {{symbol}}">income</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Balance sheet for {{symbol}}">balance</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Cash flow report for {{symbol}}">cashflow</button></li>
                 </ul>
             </div>
             <div>
-                <h3 class="font-semibold text-indigo-500 mb-1">Other</h3>
+                <h3 class="font-semibold text-gray-300 mb-3">Other</h3>
                 <ul class="space-y-1">
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="Company profile for {{symbol}}">profile</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:underline"
+                    <li><button class="tool-suggestion text-green-700 hover:text-white"
                             data-prompt="List the current executives for {{symbol}}">management</button></li>
                 </ul>
             </div>

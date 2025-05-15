@@ -17,6 +17,32 @@ export function initChat() {
 
     input.focus();
 
+    // ✅ Sidebar toggle logic
+    const toggleSidebarBtn = document.getElementById("toggle-sidebar");
+    const showSidebarBtn = document.getElementById("show-sidebar");
+    const sidebar = document.getElementById("tool-sidebar");
+    const toggleWrapper = document.getElementById("toggle-wrapper");
+
+    if (toggleSidebarBtn && showSidebarBtn && sidebar) {
+        toggleSidebarBtn.addEventListener("click", () => {
+            sidebar.classList.add("hidden");
+            sidebar.classList.remove("block");
+            toggleSidebarBtn.classList.add("hidden");
+            showSidebarBtn.classList.remove("hidden");
+            toggleWrapper.classList.remove("border-r");
+            toggleWrapper.classList.add("border-l");
+        });
+
+        showSidebarBtn.addEventListener("click", () => {
+            sidebar.classList.remove("hidden");
+            sidebar.classList.add("block");
+            toggleSidebarBtn.classList.remove("hidden");
+            showSidebarBtn.classList.add("hidden");
+            toggleWrapper.classList.add("border-r");
+            toggleWrapper.classList.remove("border-l");
+        });
+    }
+
     // ✅ Mirror textarea setup
     const mirror = document.getElementById("mirror-textarea");
 
