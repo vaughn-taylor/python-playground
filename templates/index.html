@@ -1,18 +1,19 @@
 {% extends "layout/base.html" %}
 
 {% set page_id = "chat" %}
+{% set page_title = "SignalStack" %}
 
 {% block content %}
 <div class="relative flex h-screen text-gray-900 dark:text-gray-100">
 
     <div id="toggle-wrapper"
-        class="absolute left-0 z-0 p-0 w-60 h-full border-r border-gray-700 transition duration-200 ease-in">
+        class="absolute left-0 z-0 p-0 w-60 h-full border-r border-gray-700/40 transition duration-200 ease-in">
         <button id="toggle-sidebar"
             class="absolute top-0 -right-[21px] z-50 bg-gray-600 text-white text-xs px-0 py-8 rounded-tr rounded-br shadow">
             <span class="sr-only">Hide</span>
-            <span class="text-[9px] mb-6 text-gray-300 uppercase tracking-wider font-medium"
+            <span class="text-[9px] mb-6 text-lime-400 uppercase tracking-wider font-medium"
                 style="writing-mode: vertical-rl;">prompts</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="w-5 h-5 fill-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="w-5 h-5 fill-lime-400">
                 <path
                     d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z" />
             </svg>
@@ -22,7 +23,7 @@
             <span class="sr-only">Show</span>
             <span class="text-[9px] mb-6 text-gray-300 uppercase tracking-wider font-medium"
                 style="writing-mode: vertical-rl;">prompts</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="w-5 h-5 fill-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="w-5 h-5 fill-gray-300">
                 <path
                     d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z" />
             </svg>
@@ -35,42 +36,42 @@
             <div>
                 <h3 class="font-semibold text-gray-300 mb-3">Fundamental</h3>
                 <ul class="space-y-1">
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Show key metrics for {{symbol}}">metrics</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Get the income statement for {{symbol}}">income</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="What are the financial ratios of {{symbol}}">ratios</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Show valuation multiples for {{symbol}}">multiples</button></li>
                 </ul>
             </div>
             <div>
                 <h3 class="font-semibold text-gray-300 mb-3">Valuation</h3>
                 <ul class="space-y-1">
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Get the latest stock quote for {{symbol}}">quote</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Show historical EPS for {{symbol}}">historical eps</button></li>
                 </ul>
             </div>
             <div>
                 <h3 class="font-semibold text-gray-300 mb-3">Financials</h3>
                 <ul class="space-y-1">
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Income statement for {{symbol}}">income</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Balance sheet for {{symbol}}">balance</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Cash flow report for {{symbol}}">cashflow</button></li>
                 </ul>
             </div>
             <div>
                 <h3 class="font-semibold text-gray-300 mb-3">Other</h3>
                 <ul class="space-y-1">
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="Company profile for {{symbol}}">profile</button></li>
-                    <li><button class="tool-suggestion text-green-700 hover:text-white"
+                    <li><button class="tool-suggestion text-lime-600 hover:text-white"
                             data-prompt="List the current executives for {{symbol}}">management</button></li>
                 </ul>
             </div>
@@ -97,7 +98,7 @@
         <div class="sticky bottom-0 w-full pt-4 px-6 pb-6 bg-gray-900">
             <!-- 💡 Autocomplete Tips -->
             <div class="text-xs text-gray-500 dark:text-gray-400 px-1 pb-1 mb-2">
-                <span class="inline-block mr-3">💬 Type <code class="text-green-600">$</code> for ticker (e.g.
+                <span class="inline-block mr-3">💬 Type <code class="text-lime-600">$</code> for ticker (e.g.
                     <code>$AAPL</code>)</span>
                 <span class="inline-block mr-3"><code>#</code> for company name (e.g. <code>#Microsoft</code>)</span>
                 <span class="inline-block"><kbd class="bg-gray-200 dark:bg-gray-700 px-1 rounded">Ctrl</kbd> + <kbd
