@@ -82,6 +82,14 @@
 
         <!-- 💬 Sticky input form -->
         <div class="sticky bottom-0 w-full pt-4 px-6 pb-6 bg-gray-900">
+            <!-- 💡 Autocomplete Tips -->
+            <div class="text-xs text-gray-500 dark:text-gray-400 px-1 pb-1 mb-2">
+                <span class="inline-block mr-3">💬 Type <code class="text-green-600">$</code> for ticker (e.g.
+                    <code>$AAPL</code>)</span>
+                <span class="inline-block mr-3"><code>#</code> for company name (e.g. <code>#Microsoft</code>)</span>
+                <span class="inline-block"><kbd class="bg-gray-200 dark:bg-gray-700 px-1 rounded">Ctrl</kbd> + <kbd
+                        class="bg-gray-200 dark:bg-gray-700 px-1 rounded">Space</kbd> to trigger autocomplete</span>
+            </div>
             <form id="chat-form"
                 class="relative w-full h-56 bg-gray-800 rounded-2xl p-4 flex flex-col justify-between gap-2 shadow-lg">
                 <textarea id="user-input" name="query" rows="3"

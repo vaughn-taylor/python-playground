@@ -11556,10 +11556,6 @@
     "name": "My Size, Inc."
   },
   {
-    "symbol": NaN,
-    "name": "Nano Labs Ltd"
-  },
-  {
     "symbol": "NAAS",
     "name": "NaaS Technology Inc."
   },
@@ -19366,13 +19362,5 @@
   {
     "symbol": "ZZZ",
     "name": "Cyber Hornet S&P 500 and Bitcoin 75/25 Strategy ETF"
-  },
-  {
-    "symbol": "File Creation Time: 0430202518:01",
-    "name": NaN
-  },
-  {
-    "symbol": NaN,
-    "name": NaN
   }
 ]
