@@ -1,13 +1,9 @@
 import './style.css';
-import { initFinanceChat } from './js/finance_chat';
-
-// ============================
-// Page Bootstrap
-// ============================
+import { initChat } from './js/chat';
 
 document.addEventListener("DOMContentLoaded", () => {
     const page = document.body.dataset.page;
-    if (page === "finance-chat") {
-        initFinanceChat();
+    if (page === "chat") {
+        initChat();
     }
 });

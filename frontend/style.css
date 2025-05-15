@@ -4,12 +4,36 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Typography overrides */
-.markdown-body {
-  p {
-    @apply mb-4;
+@layer components {
+
+  .markdown-body {
+
+    @apply space-y-4 leading-relaxed;
+
+    p {
+      @apply mb-5 last:mb-0;
+    }
+
+    ol, ul {
+      @apply mb-5 pl-8 pr-8 last:mb-0;
+    }
+
+    ol {
+      @apply list-decimal;
+    }
+
+    ul {
+      @apply list-disc;
+    }
+
+    li {
+      @apply mb-3 last:mb-0;
+    }
+
   }
-  li {
-    @apply mb-3;
+
+  .autocomplete-active {
+    @apply bg-lime-200 dark:bg-lime-700;
   }
+
 }

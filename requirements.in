@@ -4,5 +4,6 @@ flask
 python-dotenv
 pip-tools
 pytest
-requests  # Optional; remove if unused
-markdown  # Optional; remove if unused
+requests
+markdown
+openai

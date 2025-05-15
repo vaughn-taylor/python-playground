@@ -3,6 +3,7 @@ from flask import Flask, send_from_directory, request
 from datetime import datetime, timezone
 from routes import register_routes
 from utils.assets import get_asset_path
+from routes.autocomplete import bp as autocomplete_bp
 
 def create_app():
     app = Flask(
@@ -75,5 +76,8 @@ def create_app():
 
     # 🔁 Register routes
     register_routes(app)
+
+    # ✅ Register autocomplete route
+    app.register_blueprint(autocomplete_bp)
 
     return app
