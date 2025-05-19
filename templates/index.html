@@ -6,10 +6,9 @@
 {% block content %}
 <div class="relative flex h-screen text-gray-900 dark:text-gray-100">
 
-    <div id="toggle-wrapper"
-        class="absolute left-0 z-0 p-0 w-60 h-full border-r border-gray-700/40 transition duration-200 ease-in">
+    <div id="toggle-wrapper" class="absolute left-0 z-0 p-0 w-60 h-full border-l border-gray-700/40">
         <button id="toggle-sidebar"
-            class="absolute top-0 -right-[21px] z-50 bg-gray-600 text-white text-xs px-0 py-8 rounded-tr rounded-br shadow">
+            class="absolute top-0 -right-[21px] z-50 bg-gray-600 text-white text-xs px-0 py-8 rounded-tr rounded-br shadow hidden">
             <span class="sr-only">Hide</span>
             <span class="text-[9px] mb-6 text-lime-400 uppercase tracking-wider font-medium"
                 style="writing-mode: vertical-rl;">prompts</span>
@@ -19,7 +18,7 @@
             </svg>
         </button>
         <button id="show-sidebar"
-            class="absolute top-0 left-0 z-50 bg-gray-600 text-white text-xs px-0 py-8 rounded-tr rounded-br shadow hidden">
+            class="absolute top-0 left-0 z-50 bg-gray-600 text-white text-xs px-0 py-8 rounded-tr rounded-br shadow">
             <span class="sr-only">Show</span>
             <span class="text-[9px] mb-6 text-gray-300 uppercase tracking-wider font-medium"
                 style="writing-mode: vertical-rl;">prompts</span>
@@ -31,7 +30,7 @@
     </div>
 
     <!-- 🧰 Tool Sidebar -->
-    <div id="tool-sidebar" class="block z-10 w-60 bg-transparen p-4 overflow-y-hidden overscroll-contain">
+    <div id="tool-sidebar" class="hidden z-10 w-60 bg-transparent p-4 overflow-y-hidden overscroll-contain">
         <div class="space-y-6 text-sm">
             <div>
                 <h3 class="font-semibold text-gray-300 mb-3">Fundamental</h3>

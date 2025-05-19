@@ -17,7 +17,9 @@ def chat_index():
 
 @bp.route("/api/chat", methods=["POST"])
 def chat():
-    query = request.json.get("query", "").strip()
+    data = request.get_json() or {}
+    query = data.get("query", "").strip()
+
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
@@ -38,8 +40,9 @@ def chat():
             temperature=0.2,
         )
 
-        answer = response.choices[0].message.content.strip()
+        answer = (response.choices[0].message.content or "").strip()
         return jsonify({"response": answer, "symbol": symbol})
 
     except Exception as e:
         return jsonify({"error": f"OpenAI error: {str(e)}"}), 500
+
