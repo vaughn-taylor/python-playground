@@ -2,11 +2,31 @@
 
 {% block content %}
 <section id="analyze" class="mt-8">
-    <h2 class="text-xl font-bold mb-2">📊 Analyze Financial Data</h2>
+    <h2 class="text-xl font-bold mb-2">Analyze Financial Data</h2>
+
+    <!-- 📁 File Upload Form -->
+    <form id="upload-form" class="flex gap-2 items-center mb-4" enctype="multipart/form-data">
+        <input type="file" id="csv-file" name="file" accept=".csv"
+            class="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-lime-100 file:text-lime-700 hover:file:bg-lime-200" />
+        <button type="submit" class="bg-lime-700 text-white px-4 py-2 rounded">Upload CSV</button>
+    </form>
+    <div id="upload-status" class="text-sm text-gray-500 mb-4"></div>
+
+    <!-- 📂 File selection dropdown -->
+    <div class="mb-4">
+        <label for="selected-file" class="block text-sm font-medium text-gray-700 mb-1">
+            Choose a file to analyze:
+        </label>
+        <select id="selected-file" name="selected_file" class="border p-2 w-full text-sm">
+            <option value="" disabled selected>Select an uploaded file</option>
+        </select>
+    </div>
+
+    <!-- 💬 LangChain Agent Query -->
     <form id="analyze-form" class="flex gap-2 mb-4">
         <input type="text" id="analyze-input" class="border p-2 flex-1"
-            placeholder="e.g. What is AAPL's total revenue in 2022?" />
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Ask</button>
+            placeholder="e.g. Compare Q1 revenue over the last 10 years" />
+        <button type="submit" class="bg-lime-600 text-white px-4 py-2 rounded">Ask</button>
     </form>
     <div id="analyze-result" class="bg-gray-100 text-gray-600 p-4 rounded shadow text-sm whitespace-pre-wrap"></div>
 </section>
