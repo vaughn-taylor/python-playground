@@ -1,0 +1,13 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+<section id="analyze" class="mt-8">
+    <h2 class="text-xl font-bold mb-2">📊 Analyze Financial Data</h2>
+    <form id="analyze-form" class="flex gap-2 mb-4">
+        <input type="text" id="analyze-input" class="border p-2 flex-1"
+            placeholder="e.g. What is AAPL's total revenue in 2022?" />
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Ask</button>
+    </form>
+    <div id="analyze-result" class="bg-gray-100 text-gray-600 p-4 rounded shadow text-sm whitespace-pre-wrap"></div>
+</section>
+{% endblock %}

@@ -8,3 +8,13 @@ requests
 markdown
 openai
 rapidfuzz
+pandas
+tabulate
+
+# LangChain core stack (explicit version pinning for compatibility)
+langchain==0.1.16
+langchain-core==0.1.49
+langchain-openai==0.0.5
+langsmith==0.1.44
+langchain-experimental
+

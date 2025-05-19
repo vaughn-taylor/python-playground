@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from openai import OpenAI
+import openai
 import os
 import re
 
@@ -26,7 +26,8 @@ def chat():
     symbol = extract_symbol(query) or "an unspecified company"
 
     try:
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        # ✅ Create a modern OpenAI client instance
+        client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # type: ignore
 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -45,4 +46,3 @@ def chat():
 
     except Exception as e:
         return jsonify({"error": f"OpenAI error: {str(e)}"}), 500
-
