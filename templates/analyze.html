@@ -7,14 +7,14 @@
     <!-- 📁 File Upload Form -->
     <form id="upload-form" class="flex gap-2 items-center mb-4" enctype="multipart/form-data">
         <input type="file" id="csv-file" name="file" accept=".csv"
-            class="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-lime-100 file:text-lime-700 hover:file:bg-lime-200" />
-        <button type="submit" class="bg-lime-700 text-white px-4 py-2 rounded">Upload CSV</button>
+            class="text-sm text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-lime-700 file:text-gray-200 hover:file:bg-lime-600 hover:cursor-pointer" />
+        <button type="submit" class="bg-lime-700 hover:bg-lime-600 text-gray-200 px-4 py-2 rounded">Upload CSV</button>
     </form>
     <div id="upload-status" class="text-sm text-gray-500 mb-4"></div>
 
     <!-- 📂 File selection dropdown -->
     <div class="mb-4">
-        <label for="selected-file" class="block text-sm font-medium text-gray-700 mb-1">
+        <label for="selected-file" class="block text-sm font-medium text-white-200 mb-1">
             Choose a file to analyze:
         </label>
         <select id="selected-file" name="selected_file" class="border p-2 w-full text-sm">
@@ -26,7 +26,7 @@
     <form id="analyze-form" class="flex gap-2 mb-4">
         <input type="text" id="analyze-input" class="border p-2 flex-1"
             placeholder="e.g. Compare Q1 revenue over the last 10 years" />
-        <button type="submit" class="bg-lime-600 text-white px-4 py-2 rounded">Ask</button>
+        <button type="submit" class="bg-lime-700 hover:bg-lime-600 text-gray-200 px-4 py-2 rounded">Ask</button>
     </form>
     <div id="analyze-result" class="bg-gray-100 text-gray-600 p-4 rounded shadow text-sm whitespace-pre-wrap"></div>
 </section>

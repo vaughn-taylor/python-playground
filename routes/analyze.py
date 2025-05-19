@@ -47,11 +47,15 @@ def analyze() -> Union[Response, tuple[Response, int]]:
         agent = create_pandas_dataframe_agent(
             llm,  # type: ignore
             df,
-            verbose=True
+            verbose=True,
+            max_iterations=20,
+            early_stopping_method="generate"
         )
 
-        response = agent.run(query)
-        return jsonify({"result": response})
+        response = agent.invoke(query)
+        answer = response.get("output", "No result returned.")
+        return jsonify({"result": answer})
+
 
     except Exception as e:
         return jsonify({"error": f"Agent error: {str(e)}"}), 500
