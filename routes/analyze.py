@@ -78,6 +78,8 @@ def analyze() -> Union[Response, tuple[Response, int]]:
 
         # 📈 Try to build chart data if user requests visualization
         chart_data = None
+        chart_type = data.get("chart_type", "bar")  # 🆕 Get from request
+
         if any(keyword in query.lower() for keyword in ["chart", "plot", "graph", "visualize"]):
             try:
                 df_chart = df.copy()
@@ -93,18 +95,21 @@ def analyze() -> Union[Response, tuple[Response, int]]:
                             "labels": [str(label) for label in grouped.index],
                             "values": [int(v) for v in grouped.values]
                         }
+
                     elif "quarter" in query.lower():
                         grouped = df_chart.groupby("quarter")[target_col].sum()
                         chart_data = {
                             "labels": [str(label) for label in grouped.index],
                             "values": [int(v) for v in grouped.values]
                         }
+
             except Exception as chart_err:
                 print(f"[DEBUG] Chart extraction failed: {chart_err}")
 
         return jsonify({
             "result": answer,
-            "chart": chart_data
+            "chart": chart_data,
+            "chart_type": chart_type  # 🆕 Echo back to frontend if needed
         })
 
     except Exception as e:

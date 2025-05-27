@@ -22,6 +22,19 @@
         </select>
     </div>
 
+    <!-- 📊 Chart Type Selector -->
+    <div class="mb-4">
+        <label for="chart-type" class="block text-sm font-medium text-white mb-1">
+            Chart type:
+        </label>
+        <select id="chart-type" class="border p-2 w-full text-sm">
+            <option value="bar" selected>Bar</option>
+            <option value="line">Line</option>
+            <option value="area">Area</option>
+            <option value="scatter">Scatter</option>
+        </select>
+    </div>
+
     <!-- 💬 LangChain Agent Query -->
     <form id="analyze-form" class="flex gap-2 mb-4">
         <input type="text" id="analyze-input" class="border p-2 flex-1"
@@ -35,6 +48,15 @@
     <!-- 📈 Chart output area -->
     <div class="bg-white p-4 rounded shadow">
         <canvas id="analyze-chart" height="100"></canvas>
+        <!-- 💾 Download Chart Button -->
+        <div class="flex mt-4 space-x-3">
+            <button id="download-chart" class="hidden bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded">
+                Download Chart as PNG
+            </button>
+            <button id="download-csv" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded hidden">
+                Download Chart as CSV
+            </button>
+        </div>
     </div>
 </section>
 {% endblock %}
