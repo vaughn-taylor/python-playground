@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template, current_app, Response
 from langchain_experimental.agents import create_pandas_dataframe_agent
+from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 from typing import Union
 import pandas as pd
@@ -7,11 +8,20 @@ import os
 
 bp = Blueprint("analyze", __name__)
 
-# 🔑 Create LLM instance
+# 🔒 System message to prevent plotting libraries
+system_prompt = SystemMessage(
+    content=(
+        "You are a financial data assistant. "
+        "Never import or use matplotlib, seaborn, or any plotting libraries. "
+        "Do not generate visualizations yourself. "
+        "Only return structured data summaries or calculations that can be charted externally."
+    )
+)
+
 llm = ChatOpenAI(
     model="gpt-3.5-turbo",
     temperature=0,
-    openai_api_key=os.getenv("OPENAI_API_KEY")  # type: ignore
+    api_key=os.getenv("OPENAI_API_KEY")
 )
 
 # 🎯 Analysis UI page
@@ -44,18 +54,58 @@ def analyze() -> Union[Response, tuple[Response, int]]:
         if df.empty:
             return jsonify({"error": "CSV is empty"}), 500
 
+        # 🔍 Analyze via LangChain agent
+        # 🧠 Create LangChain agent with safe prompt
         agent = create_pandas_dataframe_agent(
-            llm,  # type: ignore
+            llm,
             df,
             verbose=True,
             max_iterations=20,
-            early_stopping_method="generate"
+            early_stopping_method="generate",
+            handle_parsing_errors=True,
+            prefix=(
+                "You are a financial data assistant. "
+                "Do not import or use matplotlib, seaborn, or any plotting libraries. "
+                "Do not generate plots. Only return summaries or structured data that can be charted by the frontend."
+            )
         )
+
+        print("[DEBUG] DataFrame preview:", df.head(3).to_string())
+        print("[DEBUG] DataFrame columns:", df.columns.tolist())
 
         response = agent.invoke(query)
         answer = response.get("output", "No result returned.")
-        return jsonify({"result": answer})
 
+        # 📈 Try to build chart data if user requests visualization
+        chart_data = None
+        if any(keyword in query.lower() for keyword in ["chart", "plot", "graph", "visualize"]):
+            try:
+                df_chart = df.copy()
+                df_chart["year"] = pd.to_datetime(df_chart["date"]).dt.year
+                df_chart["quarter"] = pd.to_datetime(df_chart["date"]).dt.to_period("Q").astype(str)
+
+                if "revenue" in query.lower() or "eps" in query.lower():
+                    target_col = "revenue" if "revenue" in query.lower() else "eps"
+
+                    if "year" in query.lower():
+                        grouped = df_chart.groupby("year")[target_col].sum()
+                        chart_data = {
+                            "labels": [str(label) for label in grouped.index],
+                            "values": [int(v) for v in grouped.values]
+                        }
+                    elif "quarter" in query.lower():
+                        grouped = df_chart.groupby("quarter")[target_col].sum()
+                        chart_data = {
+                            "labels": [str(label) for label in grouped.index],
+                            "values": [int(v) for v in grouped.values]
+                        }
+            except Exception as chart_err:
+                print(f"[DEBUG] Chart extraction failed: {chart_err}")
+
+        return jsonify({
+            "result": answer,
+            "chart": chart_data
+        })
 
     except Exception as e:
         return jsonify({"error": f"Agent error: {str(e)}"}), 500

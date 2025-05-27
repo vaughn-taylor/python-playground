@@ -1,6 +1,11 @@
 # run.py
 import os
+import sys
 from dotenv import load_dotenv
+
+# 🔧 Force unbuffered, real-time output
+os.environ["PYTHONUNBUFFERED"] = "1"
+sys.stdout = os.fdopen(sys.stdout.fileno(), "w", buffering=1)
 
 load_dotenv()
 

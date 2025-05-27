@@ -28,6 +28,13 @@
             placeholder="e.g. Compare Q1 revenue over the last 10 years" />
         <button type="submit" class="bg-lime-700 hover:bg-lime-600 text-gray-200 px-4 py-2 rounded">Ask</button>
     </form>
-    <div id="analyze-result" class="bg-gray-100 text-gray-600 p-4 rounded shadow text-sm whitespace-pre-wrap"></div>
+
+    <div id="analyze-result" class="bg-gray-100 text-gray-600 p-4 rounded shadow text-sm whitespace-pre-wrap mb-4">
+    </div>
+
+    <!-- 📈 Chart output area -->
+    <div class="bg-white p-4 rounded shadow">
+        <canvas id="analyze-chart" height="100"></canvas>
+    </div>
 </section>
 {% endblock %}
